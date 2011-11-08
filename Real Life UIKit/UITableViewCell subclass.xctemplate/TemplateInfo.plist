@@ -1,0 +1,15 @@
+{
+	AllowedTypes = (
+		"public.objective-c-source",
+		"public.objective-c-plus-plus-source",
+	);
+	"DefaultCompletionName" = MyTableViewCell;
+	Description = "An Objective-C subclass of UITableViewCell, with an optional header file which includes the <UIKit/UIKit.h> header.";
+	Kind = "Xcode.IDEKit.TextSubstitutionFileTemplateKind";
+	MainTemplateFile = "___FILEBASENAME___.m";
+	Platforms = (
+		"com.apple.platform.iphoneos",
+	);
+	SortOrder = 1;
+	Summary = "A UITableViewCell subclass with a header";
+}

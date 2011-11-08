@@ -1,0 +1,11 @@
+{
+	AllowedTypes = (
+		"public.c-header",
+	);
+	"DefaultCompletionName" = RLCoreDataEnvironmentProtocol;
+	Description = "RLCoreDataEnvironmentProtocol used by RLCoreDataObjectManagers";
+	Kind = "Xcode.IDEKit.TextSubstitutionFileTemplateKind";
+	MainTemplateFile = "___FILEBASENAME___.m";
+	SortOrder = 10;
+	Summary = "RLCoreDataEnvironmentProtocol header";
+}

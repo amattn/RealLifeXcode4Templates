@@ -1,0 +1,7 @@
+{
+	MainTemplateFile = "class.m";
+	CounterpartTemplateFile = "class.h";
+	"DefaultCompletionName" = "RLCoreDataEnvironment";
+	Description = "This template is typically named: \"RLCoreDataObjectManager.m\".\n\nThis is a template for a Core Data Environment class.  Normally, apps only need one environment class.";
+	SortOrder = 8;
+}

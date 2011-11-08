@@ -1,24 +1,51 @@
 # Real Life Xcode 4 File and Project Templates
 
-- maintainer: Matt Nunogawa
-- version: 0.5
+**Maintainer:** Matt Nunogawa ([@amattn](http://twitter.com/amattn) on [twitter][] and [github][])
+**version:** 0.7
 
-Better Xcode file and project templates.
+[twitter]: http://twitter.com/amattn
+[github]: https://github.com/amattn
 
-### Install
-
-TBD
-    
-### Update
-
-TBD
+Better Xcode file and project templates.  Over a decades worth of best practices with Cocoa distilled down into fork-tender templates.
 
 ### File Templates:
 
 - improved organization
 - commonly used methods stubbed out
 - Headerdoc comments
+- Built for ARC
 
 ### Project templates:
 
 TBD
+
+### Easy Install via Git
+
+The easiest way is to simply clone this into your Developer library directory:
+
+    mkdir -p $HOME/Library/Developer/Xcode/Templates/File\ Templates 
+    cd $HOME/Library/Developer/Xcode/Templates/File\ Templates
+    git clone git://github.com/amattn/RealLifeXcode4Templates.git
+
+Updating is simply:
+
+    cd $HOME/Library/Developer/Xcode/Templates/File\ Templates
+    git pull
+
+### Install into any Directory
+
+From the directory of your choice, clone the repository
+
+    git clone git://github.com/amattn/RealLifeXcode4Templates.git
+
+Run the following commands from the directory where you cloned:
+
+    mkdir -p $HOME/Library/Developer/Xcode/Templates/File\ Templates/RealLifeXcode4Templates 
+    rsync --checksum --recursive --delete --exclude=".git" . $HOME/Library/Developer/Xcode/Templates/File\ Templates/RealLifeXcode4Templates 
+    
+In order to update, you can use the same rsync command:
+
+	git pull
+    rsync --checksum --recursive --delete --exclude=".git" . $HOME/Library/Developer/Xcode/Templates/File\ Templates/RealLifeXcode4Templates 
+
+Please note that the above command will overwrite any changes or customizations you may have made.  You can add the `--dry-run --verbose` to get a preview of which files have changed.

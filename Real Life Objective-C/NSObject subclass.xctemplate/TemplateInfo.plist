@@ -1,0 +1,12 @@
+{
+	AllowedTypes = (
+		"public.objective-c-source",
+		"public.objective-c-plus-plus-source",
+	);
+	"DefaultCompletionName" = MyClass;
+	Description = "An Objective-C class file, with an optional header which includes the <Foundation/Foundation.h> header.";
+	Kind = "Xcode.IDEKit.TextSubstitutionFileTemplateKind";
+	MainTemplateFile = "___FILEBASENAME___.m";
+	SortOrder = 1;
+	Summary = "An Objective-C class with a header";
+}

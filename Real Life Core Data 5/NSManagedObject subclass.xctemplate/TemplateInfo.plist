@@ -1,0 +1,12 @@
+{
+	"DefaultCompletionName" = Class;
+	Description = "An Objective-C NSManagedObject subclass and header for use with Core Data, Typically, each Core Data entity will have one subclass of NSManagedObject (ie. RLBook.m, RLAuthor.m, etc.) and one subclass of RLCoreDataObjectManager (ie. RLBookManager.m, RLAuthorManager.m, etc.).";
+	Kind = "Xcode.IDECoreDataModeler.ManagedObjectTemplateKind";
+	MainTemplateFile = "___FILEBASENAME___.m";
+	AllowedTypes = (
+		"public.objective-c-source",
+	);
+	Options = ();
+	Summary = "An Objective-C NSManagedObject subclass with a header";
+	SortOrder = 1;
+}

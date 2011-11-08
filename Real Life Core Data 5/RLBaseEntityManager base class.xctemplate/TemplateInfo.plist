@@ -1,0 +1,7 @@
+{
+	MainTemplateFile = "class.m";
+	CounterpartTemplateFile = "class.h";
+	"DefaultCompletionName" = RLBaseEntityManager;
+	Description = "This template should be named: \"RLBaseEntityManager.m\".\n\nThis is a template for an abstract base class, thus you typically only need one per app.\nA high level abstract base class used for encapsulating common Core Data tasks.";
+	SortOrder = 6;
+}

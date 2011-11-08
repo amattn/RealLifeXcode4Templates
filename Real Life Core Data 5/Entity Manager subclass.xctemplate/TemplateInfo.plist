@@ -1,0 +1,12 @@
+{
+	AllowedTypes = (
+		"public.objective-c-source",
+	);
+	"DefaultCompletionName" = "Manager";
+	Description = "An Objective-C subclass of RLBaseEntityManager.  This subclass is intended to encapsulate operations and actions that apply to a set of multiple instances of an NSManagedObject.  Typically, each Core Data entity will have one subclass of NSManagedObject (ie. RLBook.m, RLAuthor.m, etc.) and one subclass of RLCoreDataObjectManager (ie. RLBookManager.m, RLAuthorManager, etc.).";
+	MainTemplateFile = "___FILEBASENAME___.m";
+	CounterpartTemplateFile = "___FILEBASENAME___.h";
+	Options = ();
+	Summary = "An Objective-C subclass of RLBaseEntityManager.";
+	SortOrder = 5;
+}

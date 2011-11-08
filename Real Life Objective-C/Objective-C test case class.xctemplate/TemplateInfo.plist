@@ -1,0 +1,11 @@
+{
+	AllowedTypes = (
+		"public.objective-c-source",
+		"public.objective-c-plus-plus-source",
+	);
+	"DefaultCompletionName" = MyTestCase;
+	Description = "An Objective-C class containing an OCUnit test case, with a header that includes the <SenTestingKit/SenTestingKit.h> header.";
+	Kind = "Xcode.IDEKit.TextSubstitutionFileTemplateKind";
+	MainTemplateFile = "___FILEBASENAME___.m";
+	Summary = "An Objective-C class containing a self-contained OCUnit test case";
+}
