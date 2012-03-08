@@ -6,7 +6,7 @@
 [twitter]: http://twitter.com/amattn
 [github]: https://github.com/amattn
 
-Better Xcode file and project templates.  Over a decades worth of best practices with Cocoa distilled down into fork-tender templates.
+Better Xcode file and project templates.  Over a decade's worth of best practices with Cocoa distilled down into fork-tender templates.
 
 ### File Templates:
 
