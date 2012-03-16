@@ -31,8 +31,7 @@ static ___FILEBASENAMEASIDENTIFIER___ *__shared___FILEBASENAMEASIDENTIFIER___ = 
     static dispatch_once_t createSingletonPredicate;
     dispatch_once(&createSingletonPredicate, ^
     {
-        __shared___FILEBASENAMEASIDENTIFIER___ = [___FILEBASENAMEASIDENTIFIER___ alloc];
-        __shared___FILEBASENAMEASIDENTIFIER___ = [self init];
+        __shared___FILEBASENAMEASIDENTIFIER___ = [[___FILEBASENAMEASIDENTIFIER___ alloc] init];
     });
     return __shared___FILEBASENAMEASIDENTIFIER___;
 }
