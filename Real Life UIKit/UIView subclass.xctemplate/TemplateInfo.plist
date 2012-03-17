@@ -4,7 +4,7 @@
 		"public.objective-c-plus-plus-source",
 	);
 	"DefaultCompletionName" = MyView;
-	Description = "An Objective-C csubclass of UIView, with an optional header file which includes the <UIKit/UIKit.h> header.";
+	Description = "An Objective-C subclass of UIView, with an optional header file which includes the <UIKit/UIKit.h> header.";
 	Kind = "Xcode.IDEKit.TextSubstitutionFileTemplateKind";
 	MainTemplateFile = "___FILEBASENAME___.m";
 	Platforms = (
