@@ -55,8 +55,8 @@
     // the default sort descriptors:
     //
     // NSSortDescriptor *sorter = [NSSortDescriptor sortDescriptorWithKey:CD_KEY_TS_ADD ascending:YES];
-    // NSArray *scanRecordSortDescriptors = [NSArray arrayWithObject:sorter];
-    // return [scanRecordSortDescriptors arrayByAddingObjectsFromArray:super.defaultSortDescriptors];
+    // NSArray *newSortDescriptors = [NSArray arrayWithObject:sorter];
+    // return [newSortDescriptors arrayByAddingObjectsFromArray:super.defaultSortDescriptors];
 
     return super.defaultSortDescriptors;
 }
