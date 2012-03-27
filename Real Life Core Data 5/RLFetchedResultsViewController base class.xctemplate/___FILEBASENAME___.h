@@ -55,7 +55,6 @@
 @property (nonatomic, strong) NSArray *sortDescriptors;
 @property (nonatomic, assign, readonly) BOOL shouldUseSections; // The default implementation returns YES.
 
-
 #pragma mark ** Utilities **
 
 - (NSFetchedResultsController *)fetchedResultsControllerWithSortDescriptors:(NSArray *)sortDescriptors;

@@ -290,7 +290,11 @@
             break;
  
         case NSFetchedResultsChangeUpdate:
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] forRowAtIndexPath:indexPath];
+		{
+			UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+			if (cell)
+            	[self configureCell:cell forRowAtIndexPath:indexPath];
+		}
             break;
  
         case NSFetchedResultsChangeMove:
