@@ -145,6 +145,7 @@
 	if (_fetchedResultsController == nil)
 	{
 		_fetchedResultsController = [self fetchedResultsControllerWithSortDescriptors:self.sortDescriptors];
+		_fetchedResultsController.delegate = self;
 	}
 	return _fetchedResultsController;
 }
