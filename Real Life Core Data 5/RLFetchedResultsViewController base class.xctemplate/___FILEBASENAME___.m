@@ -103,7 +103,6 @@
 }
  */
 
-
 //*****************************************************************************
 #pragma mark -
 #pragma mark ** Methods that subclasses MUST implement **
@@ -267,8 +266,7 @@
             break;
     }
 }
- 
- 
+
 - (void)controller:(NSFetchedResultsController *)controller 
    didChangeObject:(id)anObject
        atIndexPath:(NSIndexPath *)indexPath
@@ -303,7 +301,6 @@
             break;
     }
 }
- 
  
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller;
 {
