@@ -51,15 +51,8 @@ typedef enum {
 }
  */
 
-- (void)releaseViewResources;
-{
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
 - (void)dealloc;
 {
-	[self releaseViewResources];
     
 }
 
@@ -85,7 +78,6 @@ typedef enum {
 
 - (void)viewDidUnload;
 {
-    [self releaseViewResources];
     [super viewDidUnload];
 }
 
