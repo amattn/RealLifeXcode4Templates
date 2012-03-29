@@ -59,14 +59,6 @@ static ___FILEBASENAMEASIDENTIFIER___ *__shared___FILEBASENAMEASIDENTIFIER___ = 
     }
     return nil;
 }
-
-// These are uninteresting boilerplate, so  we condense them.
-// See "Creating a Singleton Instance" in the "Cocoa Fundamentals Guide" for more info
-- (id)copyWithZone:(NSZone *)zone {return self;}
-- (id)retain{return self;}
-- (NSUInteger)retainCount{return NSUIntegerMax;}
-- (void)release{} //do nothing
-- (id)autorelease{return self;}
 #endif
 
 //*****************************************************************************
