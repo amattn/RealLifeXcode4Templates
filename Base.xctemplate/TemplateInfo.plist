@@ -5,7 +5,7 @@
 	<key>Kind</key>
 	<string>Xcode.Xcode3.ProjectTemplateUnitKind</string>
 	<key>Identifier</key>
-	<string>com.apple.dt.unit.base</string>
+	<string>com.amattn.dt.unit.base</string>
 	<key>Options</key>
 	<array>
 		<dict>

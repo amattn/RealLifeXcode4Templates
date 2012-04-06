@@ -4,8 +4,8 @@
 <dict>
 	<key>Ancestors</key>
 	<array>
-		<string>com.apple.dt.unit.cocoaTouchApplication</string>
-		<string>com.apple.dt.unit.coreDataCocoaTouchApplication</string>
+		<string>com.amattn.dt.unit.cocoaTouchApplication</string>
+		<string>com.amattn.dt.unit.coreDataCocoaTouchApplication</string>
 	</array>
 	<key>Concrete</key>
 	<true/>
@@ -31,7 +31,7 @@
 	<key>Description</key>
 	<string>This template provides a starting point for any application. It provides just an application delegate and a window.</string>
 	<key>Identifier</key>
-	<string>com.apple.dt.unit.emptyApplication</string>
+	<string>com.amattn.dt.unit.emptyApplication</string>
 	<key>Kind</key>
 	<string>Xcode.Xcode3.ProjectTemplateUnitKind</string>
 	<key>Nodes</key>

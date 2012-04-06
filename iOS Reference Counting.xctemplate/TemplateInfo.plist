@@ -3,10 +3,10 @@
 <plist version="1.0">
 <dict>
 	<key>Identifier</key>
-	<string>com.apple.dt.unit.iOSReferenceCounting</string>
+	<string>com.amattn.dt.unit.iOSReferenceCounting</string>
 	<key>InjectionTargets</key>
 	<array>
-		<string>com.apple.dt.unit.iPhoneBase</string>
+		<string>com.amattn.dt.unit.iPhoneBase</string>
 	</array>
 	<key>Kind</key>
 	<string>Xcode.Xcode3.ProjectTemplateUnitKind</string>

@@ -5,10 +5,10 @@
 	<key>Kind</key>
 	<string>Xcode.Xcode3.ProjectTemplateUnitKind</string>
 	<key>Identifier</key>
-	<string>com.apple.dt.unit.objectiveCApplication</string>
+	<string>com.amattn.dt.unit.objectiveCApplication</string>
 	<key>Ancestors</key>
 	<array>
-		<string>com.apple.dt.unit.bundleBase</string>
+		<string>com.amattn.dt.unit.bundleBase</string>
 	</array>
 	<key>Targets</key>
 	<array>
