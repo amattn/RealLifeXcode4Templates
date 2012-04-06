@@ -1,10 +1,12 @@
-//
-//  ___FILENAME___
-//  ___PACKAGENAME___
-//
-//  Created by ___FULLUSERNAME___ on ___DATE___.
-//  Copyright (c) ___YEAR___ ___ORGANIZATIONNAME___. All rights reserved.
-//
+/******************************************************************************
+ * - Created ___DATE___ by ___FULLUSERNAME___
+ * - Copyright ___ORGANIZATIONNAME___ ___YEAR___. All rights reserved.
+ * - License: <#LICENSE#>
+ *
+ * <#SUMMARY INFORMATION#>
+ *
+ * Created from templates: https://github.com/amattn/RealLifeXcode4Templates
+ */
 
 #import <SenTestingKit/SenTestingKit.h>
 
