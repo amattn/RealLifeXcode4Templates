@@ -23,14 +23,13 @@
 
 @class RLBaseEntityManager;
 
-
 @interface ___FILEBASENAMEASIDENTIFIER___ : UIViewController <NSFetchedResultsControllerDelegate>
 {
-	// The ivars declared under the @protected directive are strictly for the use of the base classes
-	@protected
-	NSFetchedResultsController *_fetchedResultsController;
-	NSString *_predicateString;
-	NSArray *_sortDescriptors;
+    // The ivars declared under the @protected directive are strictly for the use of the base classes
+    @protected
+    NSFetchedResultsController *_fetchedResultsController;
+    NSString *_predicateString;
+    NSArray *_sortDescriptors;
 }
 #pragma mark ** Designated Initializer **
 // use parent class initializers

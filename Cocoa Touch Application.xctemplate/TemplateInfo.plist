@@ -131,7 +131,7 @@
 			<integer>1</integer>
 		</dict>
 		<key>___VARIABLE_classPrefix:identifier___AppDelegate.m:applicationDidEnterBackground:comments</key>
-		<string>// Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
+		<string>// Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
 // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 </string>
 		<key>___VARIABLE_classPrefix:identifier___AppDelegate.m:applicationLifecycle</key>
@@ -142,7 +142,7 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
+     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
      // If your application supports background execution, called instead of applicationWillTerminate: when the user quits.
 }
 

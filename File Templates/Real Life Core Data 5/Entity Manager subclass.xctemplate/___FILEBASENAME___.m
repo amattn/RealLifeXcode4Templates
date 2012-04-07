@@ -26,7 +26,7 @@
 
 + (___FILEBASENAMEASIDENTIFIER___ *)manager; // Manager using default RLCoreDataEnvironment singleton
 {
-	return [[___FILEBASENAMEASIDENTIFIER___ alloc] initWithCoreDataEnvironment:[RLCoreDataEnvironment singleton]];
+    return [[___FILEBASENAMEASIDENTIFIER___ alloc] initWithCoreDataEnvironment:[RLCoreDataEnvironment singleton]];
 }
 
 - (id)initWithCoreDataEnvironment:(NSObject <RLCoreDataEnvironmentProtocol> *)environment;
@@ -50,7 +50,7 @@
 
 - (NSArray *)defaultSortDescriptors;
 {
-    // Here is an example of how to add a custom sort descriptor in addition to 
+    // Here is an example of how to add a custom sort descriptor in addition to
     // the default sort descriptors:
     //
     // NSSortDescriptor *sorter = [NSSortDescriptor sortDescriptorWithKey:CD_KEY_TS_ADD ascending:YES];

@@ -3,7 +3,7 @@
  * - Copyright ___ORGANIZATIONNAME___ ___YEAR___. All rights reserved.
  * - License: <#LICENSE#>
  *
- * NSManagedObject subclass.  Encapsulated functionality specific to a given 
+ * NSManagedObject subclass.  Encapsulated functionality specific to a given
  * Core Data Entity
  *
  * Created from templates: https://github.com/amattn/RealLifeXcode4Templates

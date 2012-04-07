@@ -72,9 +72,9 @@
                 __strong id strongSelf = weakSelf;
                 
                 [[NSAssertionHandler currentHandler] handleFailureInMethod:_cmd
-                                                                    object:strongSelf 
+                                                                    object:strongSelf
                                                                       file:[NSString stringWithUTF8String:__FILE__]
-                                                                lineNumber:__LINE__ 
+                                                                lineNumber:__LINE__
                                                                description:@"FATAL CORE DATA ERROR"];
 
                 abort();
@@ -196,21 +196,20 @@
     if (error)
         self.errorHandlerBlock(error, _cmd, YES);
     
-	// push the changes up to the parent, so that other children contextes will see them.
-	NSManagedObjectContext *parentContext = context.parentContext;
-	if (parentContext)
-	{
-		void (^parentSaveBlock)(void) = ^{
-			NSError *parentError = nil;
-			[self.persistentStoreCoordinator lock];
-			[parentContext save:&parentError];
-			[self.persistentStoreCoordinator unlock];
-			if (parentError)
-				self.errorHandlerBlock(parentError, _cmd, YES);
-		};
-		[parentContext performBlock:parentSaveBlock];	
-	}
-
+    // push the changes up to the parent, so that other children contextes will see them.
+    NSManagedObjectContext *parentContext = context.parentContext;
+    if (parentContext)
+    {
+        void (^parentSaveBlock)(void) = ^{
+            NSError *parentError = nil;
+            [self.persistentStoreCoordinator lock];
+            [parentContext save:&parentError];
+            [self.persistentStoreCoordinator unlock];
+            if (parentError)
+                self.errorHandlerBlock(parentError, _cmd, YES);
+        };
+        [parentContext performBlock:parentSaveBlock];   
+    }
 
     return error;
 }
@@ -242,39 +241,39 @@
 #pragma mark ** Core Data Notifications **
 
 /*!
- @method		handleManagedObjectContextDidSave:
- @abstract	updated all contexts when a context performs a save operation
+ @method        handleManagedObjectContextDidSave:
+ @abstract  updated all contexts when a context performs a save operation
  @discussion Changes to ManagedObjectContext happen in isolation.  If a context performs a save,
  the best thing to do is notify _all_ other contexts about the change.
  This method does exactly that via the built-in convience method
  mergeChangesFromContextDidSaveNotification
- @param		notification
+ @param     notification
  */
 - (void)handleManagedObjectContextDidSave:(NSNotification *)notification;
 {
-	NSManagedObjectContext *notificationFromContext = [notification object];
-	
+    NSManagedObjectContext *notificationFromContext = [notification object];
+    
 #if (TARGET_IPHONE_SIMULATOR)
-	NSAssert([notificationFromContext isKindOfClass:[NSManagedObjectContext class]], @"%@: unexpected class in notification object", NSStringFromSelector(_cmd));
+    NSAssert([notificationFromContext isKindOfClass:[NSManagedObjectContext class]], @"%@: unexpected class in notification object", NSStringFromSelector(_cmd));
 #endif
-	
-	//Here if a certain context send a didSave notification, we have to notify all other context of the changes.
-	
-	for (id key in self.allContextKeys)
-	{
-		NSManagedObjectContext *contextToUpdate = [self.managedObjectContextHash objectForKey:key];
-		
-		//we don't need to update the context that sends the update...
-		if (notificationFromContext != contextToUpdate)
-		{
-			void (^updateBlock)(void) = ^{
-				[contextToUpdate mergeChangesFromContextDidSaveNotification:notification];
-				[contextToUpdate processPendingChanges];
-			};
-			
-			[contextToUpdate performBlock:updateBlock];
-		}
-	}
+    
+    //Here if a certain context send a didSave notification, we have to notify all other context of the changes.
+    
+    for (id key in self.allContextKeys)
+    {
+        NSManagedObjectContext *contextToUpdate = [self.managedObjectContextHash objectForKey:key];
+        
+        //we don't need to update the context that sends the update...
+        if (notificationFromContext != contextToUpdate)
+        {
+            void (^updateBlock)(void) = ^{
+                [contextToUpdate mergeChangesFromContextDidSaveNotification:notification];
+                [contextToUpdate processPendingChanges];
+            };
+            
+            [contextToUpdate performBlock:updateBlock];
+        }
+    }
 }
 
 //*****************************************************************************
@@ -334,14 +333,14 @@
         else
             managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
 
-		managedObjectContext.persistentStoreCoordinator = coordinator;
+        managedObjectContext.persistentStoreCoordinator = coordinator;
         [self.managedObjectContextHash setObject:managedObjectContext 
-										  forKey:safeContextKey];
+                                          forKey:safeContextKey];
 
-		[[NSNotificationCenter defaultCenter] addObserver:self
-												 selector:@selector(handleManagedObjectContextDidSave:)
-													 name:NSManagedObjectContextDidSaveNotification
-												   object:managedObjectContext];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleManagedObjectContextDidSave:)
+                                                     name:NSManagedObjectContextDidSaveNotification
+                                                   object:managedObjectContext];
         return managedObjectContext;
     }
 
@@ -370,8 +369,8 @@
         self.errorHandlerBlock(error, _cmd, NO); // NO is for non-fatal error
     }
     
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSManagedObjectContextDidSaveNotification object:objectToRemove];
-	
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSManagedObjectContextDidSaveNotification object:objectToRemove];
+    
     [self.managedObjectContextHash removeObjectForKey:contextKey];
 }
 

@@ -23,7 +23,7 @@ TBD
 
 The easiest way is to simply clone this into your Developer library directory:
 
-    mkdir -p $HOME/Library/Developer/Xcode/Templates/ 
+    mkdir -p $HOME/Library/Developer/Xcode/Templates/
     cd $HOME/Library/Developer/Xcode/Templates/
     git clone git://github.com/amattn/RealLifeXcode4Templates.git
 
@@ -41,12 +41,12 @@ From the directory of your choice, clone the repository
 
 Run the following commands from the directory where you cloned:
 
-    mkdir -p $HOME/Library/Developer/Xcode/Templates/RealLifeXcode4Templates 
-    rsync --checksum --recursive --delete --exclude=".git" . $HOME/Library/Developer/Xcode/Templates/RealLifeXcode4Templates 
+    mkdir -p $HOME/Library/Developer/Xcode/Templates/RealLifeXcode4Templates
+    rsync --checksum --recursive --delete --exclude=".git" . $HOME/Library/Developer/Xcode/Templates/RealLifeXcode4Templates
     
 In order to update, you can use the same rsync command:
 
-	git pull
+    git pull
     rsync --checksum --recursive --delete --exclude=".git" . $HOME/Library/Developer/Xcode/Templates/RealLifeXcode4Templates 
 
 Please note that the above command will overwrite any changes or customizations you may have made.  You can add the `--dry-run --verbose` to get a preview of which files have changed.

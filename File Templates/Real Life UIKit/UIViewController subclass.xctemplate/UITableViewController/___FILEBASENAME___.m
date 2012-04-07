@@ -62,7 +62,6 @@ typedef enum {
     // Release anything that's not essential, such as cached data
 }
 
-
 //*****************************************************************************
 #pragma mark -
 #pragma mark ** UIView Lifecycle **
@@ -109,7 +108,6 @@ typedef enum {
 #pragma mark -
 #pragma mark ** UIView Methods **
 
-
 /*
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
@@ -128,7 +126,7 @@ typedef enum {
 {
     if (cell == nil)
         return;
-		
+    
     // Configure the cell.
     switch (indexPath.section)
     {
@@ -177,19 +175,19 @@ typedef enum {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (cell == nil)
     {
-		if (self.storyboard)
-		{
-			// storyboard style, dequeueReusableCellWithIdentifier: should always return a cell.  If it is, check that cellIdentifier matches the value in the storyboard.
-			NSAssert(NO, @"cell should not be nil");
-		}
-		else
-		{
-			// xib style, create the cell when we can't deque
-			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-			// Configuration of cell attributes that never change can go here.  
-			// For example:
-			// cell.textLabel.textColor = <#UIColor *someColor#>      
-		}
+        if (self.storyboard)
+        {
+            // storyboard style, dequeueReusableCellWithIdentifier: should always return a cell.  If it is, check that cellIdentifier matches the value in the storyboard.
+            NSAssert(NO, @"cell should not be nil");
+        }
+        else
+        {
+            // xib style, create the cell when we can't deque
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+            // Configuration of cell attributes that never change can go here.  
+            // For example:
+            // cell.textLabel.textColor = <#UIColor *someColor#>      
+        }
     }
     
     // You may need to configure cell attrirbutes that differ based on the row 
