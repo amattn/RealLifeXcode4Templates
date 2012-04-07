@@ -19,6 +19,7 @@
 	<array>
 		<string>___PACKAGENAME___-Prefix.pch:objC:importCocoa</string>
 		<string>___PACKAGENAME___-Prefix.pch:objC:importFoundation</string>
+		<string>___PACKAGENAME___-Prefix.pch:objC:importPrecompiledGlobalUtilities</string>
 	</array>
 	<key>SortOrder</key>
 	<integer>1</integer>
