@@ -47,7 +47,7 @@
 								<key>Indent</key>
 								<integer>2</integer>
 							</dict>
-							<key>___VARIABLE_classPrefix:identifier___AppDelegate.m:applicationdidFinishLaunchingWithOptions</key>
+							<key>Source/___VARIABLE_classPrefix:identifier___AppDelegate.m:applicationdidFinishLaunchingWithOptions</key>
 							<dict>
 								<key>Beginning</key>
 								<string>- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -86,7 +86,7 @@
 								<key>Indent</key>
 								<integer>1</integer>
 							</dict>
-							<key>___VARIABLE_classPrefix:identifier___AppDelegate.m:applicationdidFinishLaunchingWithOptions</key>
+							<key>Source/___VARIABLE_classPrefix:identifier___AppDelegate.m:applicationdidFinishLaunchingWithOptions</key>
 							<dict>
 								<key>Beginning</key>
 								<string>- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions

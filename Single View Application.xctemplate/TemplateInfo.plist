@@ -10,11 +10,21 @@
 	<true/>
 	<key>Definitions</key>
 	<dict>
-		<key>___VARIABLE_classPrefix:identifier___ViewController.m:private</key>
+		<key>Source/View/___VARIABLE_classPrefix:identifier___ViewController.m:private</key>
 		<string>@interface ___VARIABLE_classPrefix:identifier___ViewController ()
 
 @end
 </string>
+		<key>Source/View/___VARIABLE_classPrefix:identifier___ViewController.h</key>
+		<dict>
+			<key>Group</key>
+			<string>View</string>
+		</dict>
+		<key>Source/View/___VARIABLE_classPrefix:identifier___ViewController.m</key>
+		<dict>
+			<key>Group</key>
+			<string>View</string>
+		</dict>
 	</dict>
 	<key>Description</key>
 	<string>This template provides a starting point for an application that uses a single view. It provides a view controller to manage the view, and a storyboard or nib file that contains the view.</string>
@@ -24,13 +34,13 @@
 	<string>Xcode.Xcode3.ProjectTemplateUnitKind</string>
 	<key>Nodes</key>
 	<array>
-		<string>___VARIABLE_classPrefix:identifier___ViewController.h:viewControllerInterface</string>
-		<string>___VARIABLE_classPrefix:identifier___ViewController.m:comments</string>
-		<string>___VARIABLE_classPrefix:identifier___ViewController.m:import:___VARIABLE_classPrefix:identifier___ViewController.h</string>
-		<string>___VARIABLE_classPrefix:identifier___ViewController.m:private</string>
-		<string>___VARIABLE_classPrefix:identifier___ViewController.m:implementation:viewDidLoad</string>
-		<string>___VARIABLE_classPrefix:identifier___ViewController.m:implementation:viewDidUnload</string>
-		<string>___VARIABLE_classPrefix:identifier___ViewController.m:implementation:shouldAutorotateToInterfaceOrientation:return</string>
+		<string>Source/View/___VARIABLE_classPrefix:identifier___ViewController.h:viewControllerInterface</string>
+		<string>Source/View/___VARIABLE_classPrefix:identifier___ViewController.m:comments</string>
+		<string>Source/View/___VARIABLE_classPrefix:identifier___ViewController.m:import:___VARIABLE_classPrefix:identifier___ViewController.h</string>
+		<string>Source/View/___VARIABLE_classPrefix:identifier___ViewController.m:private</string>
+		<string>Source/View/___VARIABLE_classPrefix:identifier___ViewController.m:implementation:viewDidLoad</string>
+		<string>Source/View/___VARIABLE_classPrefix:identifier___ViewController.m:implementation:viewDidUnload</string>
+		<string>Source/View/___VARIABLE_classPrefix:identifier___ViewController.m:implementation:shouldAutorotateToInterfaceOrientation:return</string>
 	</array>
 	<key>Options</key>
 	<array>
@@ -44,20 +54,20 @@
 					<dict>
 						<key>Definitions</key>
 						<dict>
-							<key>___VARIABLE_classPrefix:identifier___AppDelegate.h:methods:viewController</key>
+							<key>Source/___VARIABLE_classPrefix:identifier___AppDelegate.h:methods:viewController</key>
 							<string>@property (strong, nonatomic) ___VARIABLE_classPrefix:identifier___ViewController *viewController;
 </string>
-							<key>___VARIABLE_classPrefix:identifier___AppDelegate.m:applicationdidFinishLaunchingWithOptions:setup</key>
+							<key>Source/___VARIABLE_classPrefix:identifier___AppDelegate.m:applicationdidFinishLaunchingWithOptions:setup</key>
 							<string>self.viewController = ___RP___[[___VARIABLE_classPrefix:identifier___ViewController alloc] initWithNibName:@"___VARIABLE_classPrefix:identifier___ViewController" bundle:nil]___AR___;
 self.window.rootViewController = self.viewController;</string>
 						</dict>
 						<key>Nodes</key>
 						<array>
-							<string>___VARIABLE_classPrefix:identifier___AppDelegate.h:class:___VARIABLE_classPrefix:identifier___ViewController</string>
-							<string>___VARIABLE_classPrefix:identifier___AppDelegate.h:methods:viewController</string>
-							<string>___VARIABLE_classPrefix:identifier___AppDelegate.m:import:___VARIABLE_classPrefix:identifier___ViewController.h</string>
-							<string>___VARIABLE_classPrefix:identifier___AppDelegate.m:implementation:synthesize:viewController = _viewController</string>
-							<string>___VARIABLE_classPrefix:identifier___AppDelegate.m:implementation:dealloc:_viewController</string>
+							<string>Source/___VARIABLE_classPrefix:identifier___AppDelegate.h:class:___VARIABLE_classPrefix:identifier___ViewController</string>
+							<string>Source/___VARIABLE_classPrefix:identifier___AppDelegate.h:methods:viewController</string>
+							<string>Source/___VARIABLE_classPrefix:identifier___AppDelegate.m:import:___VARIABLE_classPrefix:identifier___ViewController.h</string>
+							<string>Source/___VARIABLE_classPrefix:identifier___AppDelegate.m:implementation:synthesize:viewController = _viewController</string>
+							<string>Source/___VARIABLE_classPrefix:identifier___AppDelegate.m:implementation:dealloc:_viewController</string>
 						</array>
 					</dict>
 				</array>
@@ -88,7 +98,7 @@ self.window.rootViewController = self.viewController;</string>
 					<dict>
 						<key>Definitions</key>
 						<dict>
-							<key>___VARIABLE_classPrefix:identifier___AppDelegate.m:applicationdidFinishLaunchingWithOptions:setup</key>
+							<key>Source/___VARIABLE_classPrefix:identifier___AppDelegate.m:applicationdidFinishLaunchingWithOptions:setup</key>
 							<string>if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
     self.viewController = ___RP___[[___VARIABLE_classPrefix:identifier___ViewController alloc] initWithNibName:@"___VARIABLE_classPrefix:identifier___ViewController_iPhone" bundle:nil]___AR___;
 } else {
