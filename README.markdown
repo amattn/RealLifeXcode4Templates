@@ -17,7 +17,13 @@ Better Xcode file and project templates.  Over a decade's worth of best practice
 
 ### Project templates:
 
-TBD
+- More Sane Folder Layout
+- Improved Project Navigator Organization
+- more TODO
+
+The Project templates are opinionated, and also a work in progress.
+
+The Project templates in general are difficult to test.  The Single View Application template alone has 24 possible outputs for the configuration options.  If you come across a combination that doesn't build or seems not to work, please let me know.
 
 ### Easy Install via Git
 
