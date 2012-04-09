@@ -27,7 +27,7 @@
 	<key>Nodes</key>
 	<array>
 		<string>___PACKAGENAME___-Info.plist:CFBundleIdentifier</string>
-		<string>en.lproj/InfoPlist.strings:Instructions</string>
+		<string>Resources/en.lproj/InfoPlist.strings:Instructions</string>
 	</array>
 	<key>Definitions</key>
 	<dict>
@@ -55,12 +55,12 @@
 		<string>&lt;key&gt;CFBundleIdentifier&lt;/key&gt;
 &lt;string&gt;___VARIABLE_bundleIdentifierPrefix:bundleIdentifier___.${PRODUCT_NAME:rfc1034identifier}&lt;/string&gt;
 </string>
-		<key>en.lproj/InfoPlist.strings</key>
+		<key>Resources/en.lproj/InfoPlist.strings</key>
 		<dict>
 			<key>Group</key>
 			<string>Supporting Files</string>
 		</dict>
-		<key>en.lproj/InfoPlist.strings:Instructions</key>
+		<key>Resources/en.lproj/InfoPlist.strings:Instructions</key>
 		<string>/* Localized versions of Info.plist keys */
 </string>
 	</dict>

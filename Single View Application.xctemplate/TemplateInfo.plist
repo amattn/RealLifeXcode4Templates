@@ -83,13 +83,17 @@ self.window.rootViewController = self.viewController;</string>
 					<dict>
 						<key>Definitions</key>
 						<dict>
-							<key>en.lproj/MainStoryboard_iPad.storyboard</key>
+							<key>Resources/en.lproj/MainStoryboard_iPad.storyboard</key>
 							<dict>
+								<key>Group</key>
+								<string>Resources</string>
 								<key>Path</key>
 								<string>MainStoryboard_iPad.storyboard</string>
 							</dict>
-							<key>en.lproj/MainStoryboard_iPhone.storyboard</key>
+							<key>Resources/en.lproj/MainStoryboard_iPhone.storyboard</key>
 							<dict>
+								<key>Group</key>
+								<string>Resources</string>
 								<key>Path</key>
 								<string>MainStoryboard_iPhone.storyboard</string>
 							</dict>
@@ -105,21 +109,25 @@ self.window.rootViewController = self.viewController;</string>
     self.viewController = ___RP___[[___VARIABLE_classPrefix:identifier___ViewController alloc] initWithNibName:@"___VARIABLE_classPrefix:identifier___ViewController_iPad" bundle:nil]___AR___;
 }
 self.window.rootViewController = self.viewController;</string>
-							<key>en.lproj/___VARIABLE_classPrefix:identifier___ViewController_iPad.xib</key>
+							<key>Resources/en.lproj/___VARIABLE_classPrefix:identifier___ViewController_iPad.xib</key>
 							<dict>
+								<key>Group</key>
+								<string>View</string>
 								<key>Path</key>
 								<string>ViewControlleriPad.xib</string>
 							</dict>
-							<key>en.lproj/___VARIABLE_classPrefix:identifier___ViewController_iPhone.xib</key>
+							<key>Resources/en.lproj/___VARIABLE_classPrefix:identifier___ViewController_iPhone.xib</key>
 							<dict>
+								<key>Group</key>
+								<string>View</string>
 								<key>Path</key>
 								<string>ViewControlleriPhone.xib</string>
 							</dict>
 						</dict>
 						<key>Nodes</key>
 						<array>
-							<string>en.lproj/___VARIABLE_classPrefix:identifier___ViewController_iPhone.xib</string>
-							<string>en.lproj/___VARIABLE_classPrefix:identifier___ViewController_iPad.xib</string>
+							<string>Resources/en.lproj/___VARIABLE_classPrefix:identifier___ViewController_iPhone.xib</string>
+							<string>Resources/en.lproj/___VARIABLE_classPrefix:identifier___ViewController_iPad.xib</string>
 						</array>
 						<key>RequiredOptions</key>
 						<dict>
@@ -133,8 +141,10 @@ self.window.rootViewController = self.viewController;</string>
 					<dict>
 						<key>Definitions</key>
 						<dict>
-							<key>en.lproj/MainStoryboard.storyboard</key>
+							<key>Resources/en.lproj/MainStoryboard.storyboard</key>
 							<dict>
+								<key>Group</key>
+								<string>Resources</string>
 								<key>Path</key>
 								<string>MainStoryboard_iPad.storyboard</string>
 							</dict>
@@ -143,15 +153,17 @@ self.window.rootViewController = self.viewController;</string>
 					<dict>
 						<key>Definitions</key>
 						<dict>
-							<key>en.lproj/___VARIABLE_classPrefix:identifier___ViewController.xib</key>
+							<key>Resources/en.lproj/___VARIABLE_classPrefix:identifier___ViewController.xib</key>
 							<dict>
+								<key>Group</key>
+								<string>View</string>
 								<key>Path</key>
 								<string>ViewControlleriPad.xib</string>
 							</dict>
 						</dict>
 						<key>Nodes</key>
 						<array>
-							<string>en.lproj/___VARIABLE_classPrefix:identifier___ViewController.xib</string>
+							<string>Resources/en.lproj/___VARIABLE_classPrefix:identifier___ViewController.xib</string>
 						</array>
 						<key>RequiredOptions</key>
 						<dict>
@@ -165,8 +177,10 @@ self.window.rootViewController = self.viewController;</string>
 					<dict>
 						<key>Definitions</key>
 						<dict>
-							<key>en.lproj/MainStoryboard.storyboard</key>
+							<key>Resources/en.lproj/MainStoryboard.storyboard</key>
 							<dict>
+								<key>Group</key>
+								<string>Resources</string>
 								<key>Path</key>
 								<string>MainStoryboard_iPhone.storyboard</string>
 							</dict>
@@ -175,15 +189,17 @@ self.window.rootViewController = self.viewController;</string>
 					<dict>
 						<key>Definitions</key>
 						<dict>
-							<key>en.lproj/___VARIABLE_classPrefix:identifier___ViewController.xib</key>
+							<key>Resources/en.lproj/___VARIABLE_classPrefix:identifier___ViewController.xib</key>
 							<dict>
+								<key>Group</key>
+								<string>View</string>
 								<key>Path</key>
 								<string>ViewControlleriPhone.xib</string>
 							</dict>
 						</dict>
 						<key>Nodes</key>
 						<array>
-							<string>en.lproj/___VARIABLE_classPrefix:identifier___ViewController.xib</string>
+							<string>Resources/en.lproj/___VARIABLE_classPrefix:identifier___ViewController.xib</string>
 						</array>
 						<key>RequiredOptions</key>
 						<dict>

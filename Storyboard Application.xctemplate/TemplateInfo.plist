@@ -115,7 +115,7 @@
 						<key>Nodes</key>
 						<array>
 							<string>___PACKAGENAME___-Info.plist:UIMainStoryboardFile</string>
-							<string>en.lproj/MainStoryboard.storyboard</string>
+							<string>Resources/en.lproj/MainStoryboard.storyboard</string>
 						</array>
 						<key>RequiredOptions</key>
 						<dict>
@@ -133,7 +133,7 @@
 						<key>Nodes</key>
 						<array>
 							<string>___PACKAGENAME___-Info.plist:UIMainStoryboardFile</string>
-							<string>en.lproj/MainStoryboard.storyboard</string>
+							<string>Resources/en.lproj/MainStoryboard.storyboard</string>
 						</array>
 						<key>RequiredOptions</key>
 						<dict>
@@ -153,8 +153,8 @@
 						<key>Nodes</key>
 						<array>
 							<string>___PACKAGENAME___-Info.plist:UIMainStoryboardFile</string>
-							<string>en.lproj/MainStoryboard_iPhone.storyboard</string>
-							<string>en.lproj/MainStoryboard_iPad.storyboard</string>
+							<string>Resources/en.lproj/MainStoryboard_iPhone.storyboard</string>
+							<string>Resources/en.lproj/MainStoryboard_iPad.storyboard</string>
 						</array>
 						<key>RequiredOptions</key>
 						<dict>
