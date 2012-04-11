@@ -20,9 +20,9 @@
 @interface ___FILEBASENAMEASIDENTIFIER___ : SenTestCase
 {
     // Most test cases don't need an explicit .h file.
-    // However if you plan on having test cases that inheirit from 
+    // However if you plan on having test cases that inherit from 
     // other test cases, you can extract this @interface into 
-    // a .h file for other test cases to inheirit from.
+    // a .h file for other test cases to inherit from.
 
 }
 @end
