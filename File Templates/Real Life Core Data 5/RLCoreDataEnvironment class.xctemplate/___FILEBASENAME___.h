@@ -8,13 +8,17 @@
  * Created from templates: https://github.com/amattn/RealLifeXcode4Templates
  */
 
+#import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "RLCoreDataEnvironmentProtocol.h"
 
 #pragma mark ** Constant Defines **
 
 #define RLCORE_DATA_FILE_NAME @"com.___ORGANIZATIONNAME___.___FILEBASENAMEASIDENTIFIER___.sqlite"
-#define RLCORE_DATA_MOMD_FILENAME @"___FILEBASENAMEASIDENTIFIER___"
+// The default name is Model.  This should match the actual name of your XXX.xcdatamodeld file
+#define RLCORE_DATA_MOMD_FILENAME @"Model"
+// This should match the identifier of your UnitTest Bundle
+#define RLCORE_DATA_UNIT_TEST_BUNDLE_IDENFIER @"com.___ORGANIZATIONNAME___.UnitTest"
 
 #pragma mark ** Protocols & Declarations **
 
@@ -29,18 +33,17 @@ typedef void (^RLCoreDataErrorHandlerType)(NSError *error, SEL selectorWithError
 + (___FILEBASENAMEASIDENTIFIER___ *)singleton;
 
 #pragma mark ** Properties & Accessors **
-@property(strong, readonly) NSManagedObjectModel *managedObjectModel;
-@property(strong, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+@property(atomic, strong, readonly) NSManagedObjectModel *managedObjectModel;
+@property(atomic, strong, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
 // NSManagedObjectContexts
-@property(strong, readonly) NSManagedObjectContext *mainThreadManagedObjectContext;
-@property(strong, readonly) NSManagedObjectContext *backgroundManagedObjectContext;
-@property(strong, readonly) NSArray *allContextKeys;
+@property(atomic, strong, readonly) NSManagedObjectContext *mainThreadManagedObjectContext;
+@property(atomic, strong, readonly) NSArray *allContextKeys;
 - (NSManagedObjectContext *)managedObjectContextForContextKey:(NSString *)contextKey;
 - (void)removeManagedObjectContextForKey:(NSString *)contextKey;
 
 // Error handling
-@property(copy) RLCoreDataErrorHandlerType errorHandlerBlock;
+@property(nonatomic, copy) RLCoreDataErrorHandlerType errorHandlerBlock;
 
 //Typically only changed for test or debug...
 @property(nonatomic, assign) BOOL isTestEnvironment;
@@ -50,14 +53,13 @@ typedef void (^RLCoreDataErrorHandlerType)(NSError *error, SEL selectorWithError
 #pragma mark ** Helpers **
 
 //Get NSManagedObject from an NSManagedObjectID
-- (NSManagedObject *)objectForObjectID:(NSManagedObjectID *)objectID; // if on main thread, uses mainThreadManagedObjectContext, else defaultBackgroundManagedObjectContext
-- (NSManagedObject *)objectForObjectID:(NSManagedObjectID *)objectID
-                         forContextKey:(NSString *)contextKey;
+- (NSManagedObject *)objectForObjectID:(NSManagedObjectID *)objectID forContextKey:(NSString *)contextKey;
 
 //get NSManagedObject form an objectIDString
-- (NSManagedObject *)objectForObjectIDString:(NSString *)objectIDString; // if on main thread, uses mainThreadManagedObjectContext, else defaultBackgroundManagedObjectContext
-- (NSManagedObject *)objectForObjectIDString:(NSString *)objectIDString
-                               forContextKey:(NSString *)contextKey;
+- (NSManagedObject *)objectForObjectIDString:(NSString *)objectIDString forContextKey:(NSString *)contextKey;
+
+//Get NSManagedObject from an NSManagedObject of an unknown/different context
+- (NSManagedObject *)convertManagedObjectOfUnknownContext:(NSManagedObject *)unknownContextManagedObject toContextKey:(NSString *)contextKey;
 
 //Save the specified context
 - (NSError *)saveContextForContextKey:(NSString *)contextKey;

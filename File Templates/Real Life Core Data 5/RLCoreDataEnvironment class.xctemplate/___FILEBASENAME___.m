@@ -17,34 +17,34 @@
 @property (strong, readonly) NSMutableDictionary *managedObjectContextHash;
 @property (nonatomic, strong, readwrite) NSString *storeType;
 @property (nonatomic, strong, readwrite) NSBundle *modelBundle;
+@property (nonatomic, strong, readwrite) NSDate *lastResetToken;
 @end
 
 @implementation ___FILEBASENAMEASIDENTIFIER___
 
 @synthesize managedObjectContextHash = _managedObjectContextHash;
-@synthesize mainThreadManagedObjectContext = _mainThreadManagedObjectContext;
-@synthesize backgroundManagedObjectContext = _defaultBackgroundManagedObjectContext;
 
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize errorHandlerBlock = _errorHandlerBlock;
 @synthesize storeType = _storeType;
 @synthesize modelBundle = _modelBundle;
+@synthesize lastResetToken = _lastResetToken;
 @synthesize isTestEnvironment = _isTestEnvironment;
 
 #pragma mark ** Singleton **
 
-+ (RLCoreDataEnvironment *)singleton;
++ (___FILEBASENAMEASIDENTIFIER___ *)singleton;
 {
-    static RLCoreDataEnvironment *__sharedCoreDataEnvironment = nil;
-    static dispatch_once_t __onlyOnceToken;
+    static ___FILEBASENAMEASIDENTIFIER___ *__sharedCoreDataEnvironment = nil;
+    static dispatch_once_t __singletonCreationToken;
 
     void (^onlyOnceBlock)(void) = ^
     {
         __sharedCoreDataEnvironment = [[self alloc] init];
     };
 
-    dispatch_once(&__onlyOnceToken, onlyOnceBlock);
+    dispatch_once(&__singletonCreationToken, onlyOnceBlock);
     return __sharedCoreDataEnvironment;
 }
 
@@ -62,20 +62,23 @@
         //simple default error handler
         self.errorHandlerBlock = ^(NSError *error, SEL selectorWithError, BOOL isFatal)
         {
+            __strong id strongSelf = weakSelf;
+
             // typically, errors fall into one of two classes, fatal and non-fatal.
-            
+            NSLog(@"environment %@", strongSelf);
             NSLog(@"selectorWithError %@", NSStringFromSelector(selectorWithError));
             NSLog(@"error %@", error);
             
             if (isFatal)
             {
-                __strong id strongSelf = weakSelf;
+                
+                NSString *desc = [NSString stringWithFormat:@"FATAL ___FILEBASENAMEASIDENTIFIER___ ERROR: %@", error];
                 
                 [[NSAssertionHandler currentHandler] handleFailureInMethod:_cmd
                                                                     object:strongSelf
                                                                       file:[NSString stringWithUTF8String:__FILE__]
                                                                 lineNumber:__LINE__
-                                                               description:@"FATAL CORE DATA ERROR"];
+                                                               description:desc];
 
                 abort();
                 /*
@@ -116,13 +119,6 @@
 #pragma mark -
 #pragma mark ** Helpers **
 
-- (NSManagedObject *)objectForObjectID:(NSManagedObjectID *)objectID; // if on main thread, uses mainThreadManagedObjectContext, else defaultBackgroundManagedObjectContext
-{
-    if ([NSThread isMainThread])
-        return [self objectForObjectID:objectID forContextKey:RLCORE_DATA_MAIN_THREAD_CONTEXT_KEY];
-    else
-        return [self objectForObjectID:objectID forContextKey:RLCORE_DATA_BACKGROUND_CONTEXT_KEY];
-}
 - (NSManagedObject *)objectForObjectID:(NSManagedObjectID *)objectID
                          forContextKey:(NSString *)contextKey;
 {
@@ -138,18 +134,9 @@
     return managedObject;
 }
 
-- (NSManagedObject *)objectForObjectIDString:(NSString *)objectIDString; // if on main thread, uses mainThreadManagedObjectContext, else defaultBackgroundManagedObjectContext
-{
-    if ([NSThread isMainThread])
-        return [self objectForObjectIDString:objectIDString forContextKey:RLCORE_DATA_MAIN_THREAD_CONTEXT_KEY];
-    else
-        return [self objectForObjectIDString:objectIDString forContextKey:RLCORE_DATA_BACKGROUND_CONTEXT_KEY];
-}
-
 /*!
     @method     objectForObjectIDString:
-    @abstract   Convenience method to get an NSManagedObject from its
- ID
+    @abstract   Convenience method to get an NSManagedObject from its ID
     @discussion CoreData ManagedObjectContext's aren't truly thread-safe.  If passing
                 CoreData objects between threads, you must only pass the ID and
                 not the object itself.
@@ -174,6 +161,27 @@
     return nil;
 }
 
+/*
+ * If you try to use a given NSManagedObject from context A, with 
+ * an NSManagedObject of context B (such as setting relationships) it will 
+ * crash.
+ * This method will convert the given NSManagedObject to the approptiate
+ * context if necessary.
+ */
+- (NSManagedObject *)convertManagedObjectOfUnknownContext:(NSManagedObject *)unknownContextManagedObject
+                                             toContextKey:(NSString *)desiredContextKey;
+{
+    NSManagedObjectContext *desiredContext = [self managedObjectContextForContextKey:desiredContextKey];
+
+    // if the context matches, nothing to be done.  We're good!
+    if ([unknownContextManagedObject.managedObjectContext isEqual:desiredContext])
+        return unknownContextManagedObject;
+    
+    NSManagedObjectID *managedObjectID = [unknownContextManagedObject objectID];
+    return [self objectForObjectID:managedObjectID forContextKey:desiredContextKey];
+}
+
+
 //*****************************************************************************
 #pragma mark -
 #pragma mark ** Save & Reset **
@@ -187,53 +195,110 @@
 */
 - (NSError *)saveContextForContextKey:(NSString *)contextKey;
 {
-    NSError *error = nil;
-    [self.persistentStoreCoordinator lock];
-    NSManagedObjectContext *context = [self managedObjectContextForContextKey:contextKey];
-    [context save:&error];
-    [self.persistentStoreCoordinator unlock];
-
-    if (error)
-        self.errorHandlerBlock(error, _cmd, YES);
+    __autoreleasing NSError *error = nil;
     
-    // push the changes up to the parent, so that other children contextes will see them.
-    NSManagedObjectContext *parentContext = context.parentContext;
-    if (parentContext)
-    {
-        void (^parentSaveBlock)(void) = ^{
-            NSError *parentError = nil;
-            [self.persistentStoreCoordinator lock];
-            [parentContext save:&parentError];
-            [self.persistentStoreCoordinator unlock];
-            if (parentError)
-                self.errorHandlerBlock(parentError, _cmd, YES);
-        };
-        [parentContext performBlock:parentSaveBlock];   
+    // Unfortunately, one big global lock is the safest way to save Core Data.
+    // If your saves are taking too long, it's probably because you are saving 
+    // one big huge data set.  Consider breaking it up into smaller saves if 
+    // possible, especially in the background.
+
+    @synchronized(self) {
+        [self.persistentStoreCoordinator lock];
+        NSManagedObjectContext *context = [self managedObjectContextForContextKey:contextKey];
+        [context save:&error];
+        [self.persistentStoreCoordinator unlock];
+
+        if (error)
+            self.errorHandlerBlock(error, _cmd, YES);  // errors here are fatal.
+        
+        // push the changes up to the parent, so that other children contextes will see them.
+        NSManagedObjectContext *parentContext = context.parentContext;
+        if (parentContext)
+        {
+            void (^parentSaveBlock)(void) = ^{
+                NSError *parentError = nil;
+                [self.persistentStoreCoordinator lock];
+                [parentContext save:&parentError];
+                [self.persistentStoreCoordinator unlock];
+                if (parentError)
+                    self.errorHandlerBlock(parentError, _cmd, YES);
+            };
+            [parentContext performBlock:parentSaveBlock];   
+        }
     }
 
     return error;
 }
 
+
+// Reset related creation tokens
+// Normally these are embedded in the lazy loading accessors, but as a very special case,
+// we make these available strictly for the use of our reset methods
+static dispatch_once_t __persistentStoreCoordinatorCreationToken;
+static dispatch_once_t __managedObjectModelCreationToken;
+static dispatch_once_t __managedObjectContextHashCreationToken;
+
 /*!
     @method     resetCoreData
     @abstract   Delete all core data items
-    @discussion Primarily used for testing.
+    @discussion Primarily used for testing.  If you choose to use this in production, please be very aware of it's limitations.  
+                If you have operations in flight (say in a network callback) the behavior is undefined.
 */
 - (void)resetCoreData;
 {
-    _managedObjectModel = nil;
-    _managedObjectContextHash = nil;
-    _mainThreadManagedObjectContext = nil;
-    _defaultBackgroundManagedObjectContext = nil;
-
-    NSArray *stores = [self.persistentStoreCoordinator persistentStores];
-    for (NSPersistentStore *store in stores)
+    @synchronized(self)
     {
-        [self.persistentStoreCoordinator removePersistentStore:store error:nil];
-        [[NSFileManager defaultManager] removeItemAtPath:store.URL.path error:nil];
-    }
+        self.lastResetToken = [NSDate date];
+        
+        _managedObjectModel = nil;
+        __managedObjectModelCreationToken = 0; // setting creation tokens to zero is either genius or terrible hack to allow us to perform dispatch_once more than once.
 
-    _persistentStoreCoordinator = nil;
+        // if there are any performBlock: operations in flight we need to keep our contexts around just a little bit longer so they can safely exit
+        // be aware, that sometimes, Core Data will launch performBlock operations internally in some cases.
+        __autoreleasing NSMutableDictionary *justALittleBitLonger = _managedObjectContextHash;
+        [justALittleBitLonger self]; // appease the compiler
+        _managedObjectContextHash = nil;
+        __managedObjectContextHashCreationToken = 0;
+        
+        NSArray *stores = [_persistentStoreCoordinator persistentStores];
+        for (NSPersistentStore *store in stores)
+        {
+            [_persistentStoreCoordinator removePersistentStore:store error:nil];
+            if ([self.storeType isEqualToString:NSInMemoryStoreType] == NO) {
+                [[NSFileManager defaultManager] removeItemAtPath:store.URL.path error:nil];
+            }
+        }
+        
+        _persistentStoreCoordinator = nil;
+        __persistentStoreCoordinatorCreationToken = 0;
+    }
+}
+
+//*****************************************************************************
+#pragma mark -
+#pragma mark ** Primitive Block Based Actions **
+
+/* 
+ * These methods are used to safely perform actions in a given context.
+ * Any Core Data operations performed on the background or user created
+ * contexts must use these performBlock warppers
+ *
+ */
+
+- (void)inContextForKey:(NSString *)contextKey performBlock:(void (^)(NSString *innerContextKey))blockWithContextKey
+{
+    NSManagedObjectContext *context = [self managedObjectContextForContextKey:contextKey];
+    [context performBlock:^{
+        blockWithContextKey(contextKey);
+    }];
+}
+
+- (void)inContextForKey:(NSString *)contextKey performBlockAndWait:(void (^)(NSString *innerContextKey))blockWithContextKey
+{
+    NSManagedObjectContext *context = [self managedObjectContextForContextKey:contextKey];
+    [context performBlockAndWait:^{
+        blockWithContextKey(contextKey);
+    }];
 }
 
 //*****************************************************************************
@@ -266,12 +331,13 @@
         //we don't need to update the context that sends the update...
         if (notificationFromContext != contextToUpdate)
         {
-            void (^updateBlock)(void) = ^{
-                [contextToUpdate mergeChangesFromContextDidSaveNotification:notification];
-                [contextToUpdate processPendingChanges];
-            };
-            
-            [contextToUpdate performBlock:updateBlock];
+            NSDate *currentResetToken = self.lastResetToken;
+            [contextToUpdate performBlock:^{
+                // we only want to merge if we have NOT reset this environment.
+                if (currentResetToken == self.lastResetToken) {
+                    [contextToUpdate mergeChangesFromContextDidSaveNotification:notification];
+                }
+            }];
         }
     }
 }
@@ -282,20 +348,7 @@
 
 - (NSManagedObjectContext *)mainThreadManagedObjectContext;
 {
-    if (_mainThreadManagedObjectContext == nil)
-    {
-        _mainThreadManagedObjectContext = [self managedObjectContextForContextKey:RLCORE_DATA_MAIN_THREAD_CONTEXT_KEY];
-    }
-    return _mainThreadManagedObjectContext;
-}
-
-- (NSManagedObjectContext *)backgroundManagedObjectContext;
-{
-    if (_defaultBackgroundManagedObjectContext == nil)
-    {
-        _defaultBackgroundManagedObjectContext = [self managedObjectContextForContextKey:RLCORE_DATA_BACKGROUND_CONTEXT_KEY];
-    }
-    return _defaultBackgroundManagedObjectContext;
+    return [self managedObjectContextForContextKey:RLCORE_DATA_MAIN_THREAD_CONTEXT_KEY];
 }
 
 - (NSArray *)allContextKeys;
@@ -305,46 +358,50 @@
 
 - (NSManagedObjectContext *)managedObjectContextForContextKey:(NSString *)contextKey;
 {
-    NSString *safeContextKey = contextKey;
-
-    //If contectKey == nil, use one of the default contexts
-    if (safeContextKey == nil)
+    @synchronized(self)
     {
-        if ([NSThread isMainThread])
-            safeContextKey = RLCORE_DATA_MAIN_THREAD_CONTEXT_KEY;
-        else
-            safeContextKey = RLCORE_DATA_BACKGROUND_CONTEXT_KEY;
-    }
-    
-    NSManagedObjectContext *managedObjectContext = [self.managedObjectContextHash objectForKey:safeContextKey];
-    
-    // if the object exists, just return it.  we're done.
-    if (managedObjectContext)
-        return managedObjectContext;
-    
-    // doesn't seem to exist, let's make a new managedObjectContext
-    
-    NSPersistentStoreCoordinator *coordinator = self.persistentStoreCoordinator;
-    
-    if (coordinator != nil)
-    {
-        if ([safeContextKey isEqualToString:RLCORE_DATA_MAIN_THREAD_CONTEXT_KEY])
-            managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
-        else
-            managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+        // First things first:
+        NSAssert(self.managedObjectContextHash != nil, @"\n\n\n\nself.managedObjectContextHash cannot be nil!!!\n\n\n\n");
 
-        managedObjectContext.persistentStoreCoordinator = coordinator;
-        [self.managedObjectContextHash setObject:managedObjectContext 
-                                          forKey:safeContextKey];
-
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleManagedObjectContextDidSave:)
-                                                     name:NSManagedObjectContextDidSaveNotification
-                                                   object:managedObjectContext];
-        return managedObjectContext;
-    }
-
-    // oops, something went wrong.
+        NSString *safeContextKey = contextKey;
+        //If contectKey == nil, use one of the default contexts
+        if (safeContextKey == nil)
+        {
+            if (dispatch_get_main_queue() == dispatch_get_current_queue())
+                safeContextKey = RLCORE_DATA_MAIN_THREAD_CONTEXT_KEY;
+            else
+                safeContextKey = RLCORE_DATA_BACKGROUND_CONTEXT_KEY;
+        }
+    
+        NSManagedObjectContext *managedObjectContext = [self.managedObjectContextHash objectForKey:safeContextKey];
+        
+        // if the object exists, just return it.  we're done.
+        if (managedObjectContext)
+            return managedObjectContext;
+        
+            // doesn't seem to exist, let's make a new managedObjectContext
+            NSPersistentStoreCoordinator *coordinator = self.persistentStoreCoordinator;
+            
+            if (coordinator != nil)
+            {
+                if ([safeContextKey isEqualToString:RLCORE_DATA_MAIN_THREAD_CONTEXT_KEY])
+                    managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+                else
+                    managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+                
+                managedObjectContext.persistentStoreCoordinator = coordinator;
+                [self.managedObjectContextHash setObject:managedObjectContext 
+                                                  forKey:safeContextKey];
+                
+                [[NSNotificationCenter defaultCenter] addObserver:self
+                                                         selector:@selector(handleManagedObjectContextDidSave:)
+                                                             name:NSManagedObjectContextDidSaveNotification
+                                                           object:managedObjectContext];
+            return managedObjectContext;
+        }
+    }    
+        
+    // oops, something went terribly wrong.
     return nil;
 }
 
@@ -361,17 +418,19 @@
         return;
     }
     
-    NSManagedObjectContext *objectToRemove = [self.managedObjectContextHash objectForKey:contextKey];
-    if (objectToRemove == nil)
-    {
-        NSString *errorDescription = [NSString stringWithFormat:@"Key not found (%@) while attempting to remove managed object context", contextKey];
-        NSError *error = RLQUICK_ERROR(1230159715, errorDescription); //random, arbitrary error code.
-        self.errorHandlerBlock(error, _cmd, NO); // NO is for non-fatal error
+    @synchronized(self) {
+        NSManagedObjectContext *objectToRemove = [self.managedObjectContextHash objectForKey:contextKey];
+        if (objectToRemove == nil)
+        {
+            NSString *errorDescription = [NSString stringWithFormat:@"Key not found (%@) while attempting to remove managed object context", contextKey];
+            NSError *error = RLQUICK_ERROR(1230159715, errorDescription); //random, arbitrary error code.
+            self.errorHandlerBlock(error, _cmd, NO); // NO is for non-fatal error
+        }
+        
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:NSManagedObjectContextDidSaveNotification object:objectToRemove];
+        
+        [self.managedObjectContextHash removeObjectForKey:contextKey];
     }
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSManagedObjectContextDidSaveNotification object:objectToRemove];
-    
-    [self.managedObjectContextHash removeObjectForKey:contextKey];
 }
 
 //*****************************************************************************
@@ -386,28 +445,27 @@
 */
 - (NSManagedObjectModel *)managedObjectModel;
 {
-    if (_managedObjectModel != nil)
-        return _managedObjectModel;
+    dispatch_once(&__managedObjectModelCreationToken, ^{
+        NSBundle *bundle = self.modelBundle;
+        NSAssert(bundle, @"bundle must not be nil");
+        NSURL *modelURL = [bundle URLForResource:RLCORE_DATA_MOMD_FILENAME withExtension:@"momd"];
+        _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
 
-    NSBundle *bundle = self.modelBundle;
-    NSAssert(bundle, @"app bundle must not be nil");
-    NSURL *modelURL = [bundle URLForResource:RLCORE_DATA_MOMD_FILENAME withExtension:@"momd"];
-    _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+        // A Unit test bundle requires a slightly different syntax to load then an app bundle.
+        if (_managedObjectModel == nil)
+        {
+            NSArray *array = [NSArray arrayWithObject:bundle];
+            _managedObjectModel = [NSManagedObjectModel mergedModelFromBundles:array];
+        }
 
-    // A Unit test bundle requires a slightly different syntax to load then an app bundle.
-    if (_managedObjectModel == nil)
-    {
-        NSArray *array = [NSArray arrayWithObject:bundle];
-        _managedObjectModel = [NSManagedObjectModel mergedModelFromBundles:array];
-    }
-
-    if (_managedObjectModel == nil)
-    {
-        NSString *errorDescription = @"Fatal Error: _managedObjectModel cannot be nil";
-        NSError *error = RLQUICK_ERROR(2055978778, errorDescription); //random, arbitrary error code.
-        self.errorHandlerBlock(error, _cmd, YES);
-        return nil;
-    }
+        // still don't have a model.  Time to error out.
+        if (_managedObjectModel == nil)
+        {
+            NSString *errorDescription = @"Fatal Error: _managedObjectModel cannot be nil";
+            NSError *error = RLQUICK_ERROR(2055978778, errorDescription); //random, arbitrary error code.
+            self.errorHandlerBlock(error, _cmd, YES);
+        }
+    });
 
     return _managedObjectModel;
 }
@@ -420,28 +478,44 @@
 */
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator;
 {
-    if (_persistentStoreCoordinator)
-        return _persistentStoreCoordinator;
+    dispatch_once(&__persistentStoreCoordinatorCreationToken, ^{
+        NSURL *storeUrl;
+        if ([self.storeType isEqualToString:NSInMemoryStoreType]) {
+            storeUrl = nil;
+        } else {
+            storeUrl = [NSURL fileURLWithPath:[[self persistentStoreDirectory] stringByAppendingPathComponent:RLCORE_DATA_FILE_NAME]];
+        }
+        NSError *error = nil;
 
-    NSURL *storeUrl = [NSURL fileURLWithPath: [[self persistentStoreDirectory] stringByAppendingPathComponent:RLCORE_DATA_FILE_NAME]];
+        _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel];
+        
+        // options dictionary may be customized
+        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
+                                 [NSNumber numberWithBool:YES],NSMigratePersistentStoresAutomaticallyOption,
+                                 [NSNumber numberWithBool:YES],NSInferMappingModelAutomaticallyOption,
+                                 nil];
 
-    NSError *error = nil;
-    _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel];
+        NSPersistentStore *newPersistentStore = [_persistentStoreCoordinator addPersistentStoreWithType:self.storeType 
+                                                                                          configuration:nil 
+                                                                                                    URL:storeUrl 
+                                                                                                options:options
+                                                                                                  error:&error];
 
-    if (![_persistentStoreCoordinator addPersistentStoreWithType:self.storeType configuration:nil URL:storeUrl options:nil error:&error])
-    {
-        /*
-         Typical reasons for an error here include:
-         * The persistent store is not accessible
-         * The schema for the persistent store is incompatible with current managed object model
-         Check the error message to determine what the actual problem was.
-         */
+        if (!newPersistentStore)
+        {
+            /*
+             Typical reasons for an error here include:
+             * The persistent store is not accessible
+             * The schema for the persistent store is incompatible with current managed object model
+             Check the error message to determine what the actual problem was.
+             */
 
-        NSString *errorDescription = @"Fatal Error: NSPersistentStoreCoordinator cannot be nil";
-        NSError *error = RLQUICK_ERROR(58172, errorDescription); //random, arbitrary error code.
-        self.errorHandlerBlock(error, _cmd, YES);
-        return nil;
-    }
+            NSString *errorDescription = [NSString stringWithFormat:@"Fatal Error: NSPersistentStoreCoordinator cannot be nil, storeType: %@, storeUrl:%@, reason: %@", self.storeType, storeUrl, error];
+            NSError *innerError = RLQUICK_ERROR(58172, errorDescription); //random, arbitrary error code.
+            self.errorHandlerBlock(innerError, _cmd, YES);
+            _persistentStoreCoordinator = nil;
+        }
+    });
 
     return _persistentStoreCoordinator;
 }
@@ -452,13 +526,9 @@
 
 - (NSMutableDictionary *)managedObjectContextHash;
 {
-    @synchronized(self)
-    {
-        if (_managedObjectContextHash == nil)
-        {
-            _managedObjectContextHash = [[NSMutableDictionary alloc] init];
-        }
-    }
+    dispatch_once(&__managedObjectContextHashCreationToken, ^{
+        _managedObjectContextHash = [NSMutableDictionary dictionaryWithCapacity:2]; // The most common case is just two contexts: mainThread and background.
+    });
     return _managedObjectContextHash;
 }
 
@@ -469,7 +539,7 @@
     if (_isTestEnvironment)
     {
         self.storeType = NSInMemoryStoreType;
-        self.modelBundle = [NSBundle bundleWithIdentifier:@"com.Infolito LLC.UnitTest"];
+        self.modelBundle = [NSBundle bundleWithIdentifier:RLCORE_DATA_UNIT_TEST_BUNDLE_IDENFIER];
     }
     else
     {
@@ -492,5 +562,13 @@
     return NSSQLiteStoreType;
 //    return NSInMemoryStoreType;  //InMemory can be used for development/debugging/automated tests
 }
+
+- (NSString *)description;
+{
+    NSString *stringToReturn;
+    stringToReturn = [NSString stringWithFormat:@"%@ storeType:%@, contexts:%@", [super description], self.storeType, self.managedObjectContextHash];
+    return stringToReturn;
+}
+
 @end
 

@@ -1,13 +1,12 @@
 /******************************************************************************
- *  \file RLCoreDataObjectManager.h
- *  \author ___FULLUSERNAME___
- *  \date ___DATE___
- *  \class ___FILEBASENAMEASIDENTIFIER___
- *  \brief Abtract Base class for the various Core Data Entity Managers
- *  \details from https://github.com/amattn/RealLifeXcode4Templates
+ * - Created ___DATE___ by ___FULLUSERNAME___
+ * - Copyright ___ORGANIZATIONNAME___ ___YEAR___. All rights reserved.
+ * - License: <#LICENSE#>
  *
- *  \abstract Abtract Base class for the various Core Data Entity Managers 
- *  \copyright Copyright ___ORGANIZATIONNAME___ ___YEAR___. All rights reserved.
+ * Abtract Base class for various Core Data Entity Managers
+ * <#SUMMARY INFORMATION#>
+ *
+ * Created from templates: https://github.com/amattn/RealLifeXcode4Templates
  */
 
 #import "RLCoreDataEnvironment.h"
@@ -24,8 +23,31 @@
 @property(nonatomic, strong, readonly) NSString *defaultEntityName;
 @property(nonatomic, strong, readonly) NSArray *defaultSortDescriptors;
 
-#pragma mark ** Core Data Environment Properties & Accessors **
+#pragma mark ** Core Data Environment Methods **
+// These are primarily for the use of subclasses, and not intended for general use.
 - (NSManagedObjectContext *)managedObjectContextForContextKey:(NSString *)contextKey;
+- (void)inContextForKey:(NSString *)contextKey performBlock:(void (^)(NSString *innerContextKey))blockWithContextKey;
+- (void)inContextForKey:(NSString *)contextKey performBlockAndWait:(void (^)(NSString *innerContextKey))blockWithContextKey;
+
+// These four methods are the main mechanisms with with you should be interacting with Core Data.
+- (void)inMainThreadContextPerformBlock:(void (^)(NSString *innerContextKey))blockWithContextKey;
+- (void)inMainThreadContextPerformBlockAndWait:(void (^)(NSString *innerContextKey))blockWithContextKey;
+- (void)inBackgroundContextPerformBlock:(void (^)(NSString *innerContextKey))blockWithContextKey;
+- (void)inBackgroundContextPerformBlockAndWait:(void (^)(NSString *innerContextKey))blockWithContextKey;
+
+#pragma mark ** Core Data Actions ***
+
+// As a general rule, if you are doing Core Data on the background or a user defined context, 
+// It must be done withing onde of the xxxPerformBlock: or xxxPerformBlockAndWait argument blocks
+//
+// The main thread is a very special case, where you may use these methods safely as long as you
+// guaruntee that you are on the main thread or main thread queue. 
+
+#pragma mark ** NSManagedObjectID Convenience Methods **
+
+- (NSManagedObject *)objectForObjectID:(NSManagedObjectID *)objectID forContextKey:(NSString *)contextKey;
+- (NSManagedObject *)objectForObjectIDString:(NSString *)objectIDString forContextKey:(NSString *)contextKey;
+- (NSManagedObject *)convertManagedObjectOfUnknownContext:(NSManagedObject *)unknownContextManagedObject toContextKey:(NSString *)desiredContextKey;
 
 #pragma mark ** Utilities **
 
@@ -37,64 +59,17 @@
                                   contextKey:(NSString *)contextKey;
 - (void)handleError:(NSError *)error forFetchRequest:(NSFetchRequest *)fetchRequest;  // default implementation just logs the error.  Subclasses may override
 
-#pragma mark ** Asynchronous Core Data Primitive Actions **
-
-- (void)insertNewObjectWithDefaultEntityForContextKey:(NSString *)contextKey
-                                    completionHandler:(void (^)(id newObject))completionHandler;
-- (void)deleteObject:(NSManagedObject *)managedObject
-          contextKey:(NSString *)contextKey
-        errorHandler:(void (^)(NSError *error))errorHandler;
-
-#pragma mark ** Asynchronous Core Data Results Count Actions **
-
-// Basic
-- (void)resultCountForFetchRequest:(NSFetchRequest *)fetchRequest
-                        contextKey:(NSString *)contextKey
-                     resultHandler:(void (^)(NSUInteger count))resultHandler;
-
-// Convenience
-- (void)resultCountForContextKey:(NSString *)contextKey
-                   resultHandler:(void (^)(NSUInteger count))resultHandler;
-- (void)resultCountWithPredicate:(NSPredicate *)predicate
-                      contextKey:(NSString *)contextKey
-                   resultHandler:(void (^)(NSUInteger count))resultHandler;
-
-#pragma mark ** Asynchronous Core Data Fetch Actions **
-
-// Basic
-- (void)fetchAllForFetchRequest:(NSFetchRequest *)fetchRequest
-                     contextKey:(NSString *)contextKey
-                  resultHandler:(void (^)(NSArray *fetchedObjects))resultHandler;
-
-// Convenience
-- (void)fetchAllForContextKey:(NSString *)contextKey
-                resultHandler:(void (^)(NSArray *fetchedObjects))resultHandler;
-- (void)fetchAllWithPredicate:(NSPredicate *)predicate
-                   contextKey:(NSString *)contextKey
-                resultHandler:(void (^)(NSArray *fetchedObjects))resultHandler;
-- (void)fetchAllWithPredicate:(NSPredicate *)predicate
-              sortDescriptors:(NSArray *)sortDescriptors
-                   contextKey:(NSString *)contextKey
-                resultHandler:(void (^)(NSArray *fetchedObjects))resultHandler;
-- (void)fetchAllWithPredicate:(NSPredicate *)predicate
-              sortDescriptors:(NSArray *)sortDescriptors
-      prefetchedRelationships:(NSArray *)relationshipKeys
-                   fetchLimit:(NSUInteger)fetchLimit
-                   contextKey:(NSString *)contextKey
-                resultHandler:(void (^)(NSArray *fetchedObjects))resultHandler;
-- (void)fetchAllWithSortDescriptors:(NSArray *)sortDescriptors
-                         contextKey:(NSString *)contextKey
-                      resultHandler:(void (^)(NSArray *fetchedObjects))resultHandler;
-
-- (void)fetchOneWithPredicate:(NSPredicate *)predicate
-                   contextKey:(NSString *)contextKey
-                resultHandler:(void (^)(id fetchedObject))resultHandler;
-
 #pragma mark ** Synchronous/blocking Core Data Primitive Actions **
 
+// Basic
 - (id)insertNewObjectWithDefaultEntityForContextKey:(NSString *)contextKey;
 - (NSError *)deleteObject:(NSManagedObject *)managedObject
                contextKey:(NSString *)contextKey;
+
+// Convenience
+- (NSManagedObject *)upsertObjectWithValue:(id)attributeValue
+                          forAttributeName:(NSString *)attributeName
+                                contextKey:(NSString *)contextKey;
 
 #pragma mark ** Synchronous/blocking Core Data Results Count Actions **
 
@@ -136,9 +111,6 @@
 - (NSFetchedResultsController *)fetchedResultsControllerForFetchRequest:(NSFetchRequest *)fetchRequest
                                                              contextKey:(NSString *)contextKey
                                                      sectionNameKeyPath:(NSString *)sectionNameKeyPath
-                                                              cacheName:(NSString *)cacheName;
-- (NSFetchedResultsController *)fetchedResultsControllerForFetchRequest:(NSFetchRequest *)fetchRequest
-                                                             contextKey:(NSString *)contextKey
                                                               cacheName:(NSString *)cacheName;
 - (NSFetchedResultsController *)fetchedResultsControllerForFetchRequest:(NSFetchRequest *)fetchRequest
                                                              contextKey:(NSString *)contextKey;

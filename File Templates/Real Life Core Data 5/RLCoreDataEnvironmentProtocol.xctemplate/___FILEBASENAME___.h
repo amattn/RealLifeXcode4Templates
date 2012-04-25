@@ -21,14 +21,22 @@
 #pragma mark ** RLCoreDataEnvironmentProtocol **
 @protocol RLCoreDataEnvironmentProtocol <NSObject>
 
-#pragma mark ** Properties **
+#pragma mark ** Accessors **
 
 @property(retain, strong, readonly) NSManagedObjectModel *managedObjectModel;
 @property(retain, strong, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
-
-#pragma mark ** Methods **
-
 - (NSManagedObjectContext *)managedObjectContextForContextKey:(NSString *)contextKey;
+
+#pragma mark ** Primitive Actions **
+
+- (void)inContextForKey:(NSString *)contextKey performBlock:(void (^)(NSString *innerContextKey))blockWithContextKey;
+- (void)inContextForKey:(NSString *)contextKey performBlockAndWait:(void (^)(NSString *innerContextKey))blockWithContextKey;
 - (NSError *)saveContextForContextKey:(NSString *)contextKey;
+
+#pragma mark ** NSManagedObject Actions **
+
+- (NSManagedObject *)objectForObjectID:(NSManagedObjectID *)objectID forContextKey:(NSString *)contextKey;
+- (NSManagedObject *)objectForObjectIDString:(NSString *)objectIDString forContextKey:(NSString *)contextKey;
+- (NSManagedObject *)convertManagedObjectOfUnknownContext:(NSManagedObject *)unknownContextManagedObject toContextKey:(NSString *)contextKey;
 
 @end

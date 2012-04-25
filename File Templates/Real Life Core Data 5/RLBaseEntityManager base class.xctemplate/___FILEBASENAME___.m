@@ -1,13 +1,12 @@
 /******************************************************************************
- *  \file ___FILEBASENAMEASIDENTIFIER___.m
- *  \author ___FULLUSERNAME___
- *  \date ___DATE___
- *  \class ___FILEBASENAMEASIDENTIFIER___
- *  \brief <#BRIEF#>
- *  \details from https://github.com/amattn/RealLifeXcode4Templates
+ * - Created ___DATE___ by ___FULLUSERNAME___
+ * - Copyright ___ORGANIZATIONNAME___ ___YEAR___. All rights reserved.
+ * - License: <#LICENSE#>
  *
- *  \abstract Abtract Base class for the various Core Data Entity Managers 
- *  \copyright Copyright ___ORGANIZATIONNAME___ ___YEAR___. All rights reserved.
+ * Abtract Base class for various Core Data Entity Managers
+ * <#SUMMARY INFORMATION#>
+ *
+ * Created from templates: https://github.com/amattn/RealLifeXcode4Templates
  */
 
 #import "___FILEBASENAMEASIDENTIFIER___.h"
@@ -16,7 +15,7 @@
 typedef void (^VoidBlockType)(void);
 
 @interface ___FILEBASENAMEASIDENTIFIER___ ()
-@property (nonatomic, retain) NSObject <RLCoreDataEnvironmentProtocol> *environment;
+@property (nonatomic, strong, readwrite) NSObject <RLCoreDataEnvironmentProtocol> *environment;
 @end
 
 @implementation ___FILEBASENAMEASIDENTIFIER___
@@ -97,12 +96,63 @@ typedef void (^VoidBlockType)(void);
 
 //*****************************************************************************
 #pragma mark -
-#pragma mark ** Utilities **
+#pragma mark ** Core Data Environment Convenience Methods **
 
 - (NSError *)saveContextForContextKey:(NSString *)contextKey;
 {
     return [self.environment saveContextForContextKey:contextKey];
 }
+
+- (void)inContextForKey:(NSString *)contextKey performBlock:(void (^)(NSString *innerContextKey))blockWithContextKey
+{
+    [self.environment inContextForKey:contextKey performBlock:blockWithContextKey];
+}
+
+- (void)inContextForKey:(NSString *)contextKey performBlockAndWait:(void (^)(NSString *innerContextKey))blockWithContextKey
+{
+    [self.environment inContextForKey:contextKey performBlockAndWait:blockWithContextKey];
+}
+
+// These four methods are the main mechanisms with with you should be interacting with Core Data.
+- (void)inMainThreadContextPerformBlock:(void (^)(NSString *innerContextKey))blockWithContextKey;
+{
+    [self inContextForKey:RLCORE_DATA_MAIN_THREAD_CONTEXT_KEY performBlock:blockWithContextKey];
+}
+- (void)inMainThreadContextPerformBlockAndWait:(void (^)(NSString *innerContextKey))blockWithContextKey;
+{
+    [self inContextForKey:RLCORE_DATA_MAIN_THREAD_CONTEXT_KEY performBlockAndWait:blockWithContextKey];
+}
+- (void)inBackgroundContextPerformBlock:(void (^)(NSString *innerContextKey))blockWithContextKey;
+{
+    [self inContextForKey:RLCORE_DATA_BACKGROUND_CONTEXT_KEY performBlock:blockWithContextKey];
+}
+- (void)inBackgroundContextPerformBlockAndWait:(void (^)(NSString *innerContextKey))blockWithContextKey;
+{
+    [self inContextForKey:RLCORE_DATA_BACKGROUND_CONTEXT_KEY performBlockAndWait:blockWithContextKey];
+}
+
+
+//*****************************************************************************
+#pragma mark -
+#pragma mark ** NSManagedObjectID Methods **
+
+- (NSManagedObject *)objectForObjectID:(NSManagedObjectID *)objectID forContextKey:(NSString *)contextKey;
+{
+    return [self.environment objectForObjectID:objectID forContextKey:contextKey];
+}
+- (NSManagedObject *)objectForObjectIDString:(NSString *)objectIDString forContextKey:(NSString *)contextKey;
+{
+    return [self.environment objectForObjectIDString:objectIDString forContextKey:contextKey];
+}
+- (NSManagedObject *)convertManagedObjectOfUnknownContext:(NSManagedObject *)unknownContextManagedObject
+                                             toContextKey:(NSString *)contextKey;
+{
+    return [self.environment convertManagedObjectOfUnknownContext:unknownContextManagedObject toContextKey:contextKey];
+}
+
+//*****************************************************************************
+#pragma mark -
+#pragma mark ** Utilities **
 
 - (NSEntityDescription *)defaultEntityDescriptionForContextKey:(NSString *)contextKey;
 {
@@ -160,166 +210,6 @@ typedef void (^VoidBlockType)(void);
 
 //*****************************************************************************
 #pragma mark -
-#pragma mark ** Asynchronous Core Data Primitive Actions **
-
-- (void)insertNewObjectWithDefaultEntityForContextKey:(NSString *)contextKey
-                                    completionHandler:(void (^)(id newObject))completionHandler;
-{
-    NSManagedObjectContext *context = [self.environment managedObjectContextForContextKey:contextKey];
-    VoidBlockType blockToPerform = ^
-    {
-        id valueToReturn = [self insertNewObjectWithDefaultEntityForContextKey:contextKey];
-        completionHandler(valueToReturn);
-    };
-    [context performBlock:blockToPerform];
-}
-
-- (void)deleteObject:(NSManagedObject *)managedObject
-          contextKey:(NSString *)contextKey
-        errorHandler:(void (^)(NSError *error))errorHandler;
-{
-    VoidBlockType blockToPerform = ^
-    {
-        id valueToReturn = [self deleteObject:managedObject contextKey:contextKey];
-        errorHandler(valueToReturn);
-    };
-    [[self.environment managedObjectContextForContextKey:contextKey] performBlock:blockToPerform];
-}
-
-//*****************************************************************************
-#pragma mark -
-#pragma mark ** Asynchronous Core Data Results Count Actions **
-
-- (void)resultCountForFetchRequest:(NSFetchRequest *)fetchRequest
-                        contextKey:(NSString *)contextKey
-                     resultHandler:(void (^)(NSUInteger count))resultHandler;
-{
-    VoidBlockType blockToPerform = ^
-    {
-        NSUInteger valueToReturn = [self resultCountForFetchRequest:fetchRequest contextKey:contextKey];
-        resultHandler(valueToReturn);
-    };
-    [[self.environment managedObjectContextForContextKey:contextKey] performBlock:blockToPerform];
-}
-
-- (void)resultCountForContextKey:(NSString *)contextKey
-                   resultHandler:(void (^)(NSUInteger count))resultHandler;
-{
-    VoidBlockType blockToPerform = ^
-    {
-        NSUInteger valueToReturn = [self resultCountForContextKey:contextKey];
-        resultHandler(valueToReturn);
-    };
-    [[self.environment managedObjectContextForContextKey:contextKey] performBlock:blockToPerform];
-}
-
-- (void)resultCountWithPredicate:(NSPredicate *)predicate
-                      contextKey:(NSString *)contextKey
-                   resultHandler:(void (^)(NSUInteger count))resultHandler;
-{
-    VoidBlockType blockToPerform = ^
-    {
-        NSUInteger valueToReturn = [self resultCountWithPredicate:predicate contextKey:contextKey];
-        resultHandler(valueToReturn);
-    };
-    [[self.environment managedObjectContextForContextKey:contextKey] performBlock:blockToPerform];
-}
-
-//*****************************************************************************
-#pragma mark -
-#pragma mark ** Asynchronous Core Data Fetch Actions **
-
-// Basic
-- (void)fetchAllForFetchRequest:(NSFetchRequest *)fetchRequest
-                     contextKey:(NSString *)contextKey
-                  resultHandler:(void (^)(NSArray *fetchedObjects))resultHandler;
-{
-    VoidBlockType blockToPerform = ^
-    {
-        NSArray *valueToReturn = [self fetchAllForFetchRequest:fetchRequest contextKey:contextKey];
-        resultHandler(valueToReturn);
-    };
-    [[self.environment managedObjectContextForContextKey:contextKey] performBlock:blockToPerform];
-}
-
-// Convenience
-- (void)fetchAllForContextKey:(NSString *)contextKey
-                resultHandler:(void (^)(NSArray *fetchedObjects))resultHandler;
-{
-    VoidBlockType blockToPerform = ^
-    {
-        NSArray *valueToReturn = [self fetchAllForContextKey:contextKey];
-        resultHandler(valueToReturn);
-    };
-    [[self.environment managedObjectContextForContextKey:contextKey] performBlock:blockToPerform];
-}
-
-- (void)fetchAllWithPredicate:(NSPredicate *)predicate
-                   contextKey:(NSString *)contextKey
-                resultHandler:(void (^)(NSArray *fetchedObjects))resultHandler;
-{
-    VoidBlockType blockToPerform = ^
-    {
-        NSArray *valueToReturn = [self fetchAllWithPredicate:predicate contextKey:contextKey];
-        resultHandler(valueToReturn);
-    };
-    [[self.environment managedObjectContextForContextKey:contextKey] performBlock:blockToPerform];
-}
-
-- (void)fetchAllWithPredicate:(NSPredicate *)predicate
-              sortDescriptors:(NSArray *)sortDescriptors
-                   contextKey:(NSString *)contextKey
-                resultHandler:(void (^)(NSArray *fetchedObjects))resultHandler;
-{
-    VoidBlockType blockToPerform = ^
-    {
-        NSArray *valueToReturn = [self fetchAllWithPredicate:predicate sortDescriptors:sortDescriptors contextKey:contextKey];
-        resultHandler(valueToReturn);
-    };
-    [[self.environment managedObjectContextForContextKey:contextKey] performBlock:blockToPerform];
-}
-
-- (void)fetchAllWithPredicate:(NSPredicate *)predicate
-              sortDescriptors:(NSArray *)sortDescriptors
-      prefetchedRelationships:(NSArray *)relationshipKeys
-                   fetchLimit:(NSUInteger)fetchLimit
-                   contextKey:(NSString *)contextKey
-                resultHandler:(void (^)(NSArray *fetchedObjects))resultHandler;
-{
-    VoidBlockType blockToPerform = ^
-    {
-        NSArray *valueToReturn = [self fetchAllWithPredicate:predicate sortDescriptors:sortDescriptors prefetchedRelationships:relationshipKeys fetchLimit:fetchLimit contextKey:contextKey];
-        resultHandler(valueToReturn);
-    };
-    [[self.environment managedObjectContextForContextKey:contextKey] performBlock:blockToPerform];
-}
-
-- (void)fetchAllWithSortDescriptors:(NSArray *)sortDescriptors
-                         contextKey:(NSString *)contextKey
-                      resultHandler:(void (^)(NSArray *fetchedObjects))resultHandler;
-{
-    VoidBlockType blockToPerform = ^
-    {
-        NSArray *valueToReturn = [self fetchAllWithSortDescriptors:sortDescriptors contextKey:contextKey];
-        resultHandler(valueToReturn);
-    };
-    [[self.environment managedObjectContextForContextKey:contextKey] performBlock:blockToPerform];
-}
-
-- (void)fetchOneWithPredicate:(NSPredicate *)predicate
-                   contextKey:(NSString *)contextKey
-                resultHandler:(void (^)(id fetchedObject))resultHandler;
-{
-    VoidBlockType blockToPerform = ^
-    {
-        NSArray *valueToReturn = [self fetchOneWithPredicate:predicate contextKey:contextKey];
-        resultHandler(valueToReturn);
-    };
-    [[self.environment managedObjectContextForContextKey:contextKey] performBlock:blockToPerform];
-}
-
-//*****************************************************************************
-#pragma mark -
 #pragma mark ** Synchronous/blocking Core Data Primitive Actions **
 
 - (id)insertNewObjectWithDefaultEntityForContextKey:(NSString *)contextKey;
@@ -347,6 +237,24 @@ typedef void (^VoidBlockType)(void);
     
     [context deleteObject:managedObject];
     return nil;
+}
+
+/**
+ * This makes the assumption that there is only one object with the actual value for the given key.
+ */
+- (NSManagedObject *)upsertObjectWithValue:(id)attributeValue
+                          forAttributeName:(NSString *)attributeName
+                                contextKey:(NSString *)contextKey;
+{
+    NSPredicate *predicate = [RLBaseEntityManager predicateWithAttributeName:attributeName value:attributeValue];
+    NSManagedObject *coreDataObject = [self fetchOneWithPredicate:predicate contextKey:contextKey];
+    
+    if (coreDataObject == nil) {
+        coreDataObject = [self insertNewObjectWithDefaultEntityForContextKey:contextKey];
+        [coreDataObject setValue:attributeValue forKey:attributeName];
+    }
+    
+    return coreDataObject;
 }
 
 //*****************************************************************************
@@ -499,20 +407,11 @@ typedef void (^VoidBlockType)(void);
 }
     
 - (NSFetchedResultsController *)fetchedResultsControllerForFetchRequest:(NSFetchRequest *)fetchRequest
-                                                             contextKey:(NSString *)contextKey
-                                                              cacheName:(NSString *)cacheName;
-{
-    return [self fetchedResultsControllerForFetchRequest:fetchRequest
-                                              contextKey:contextKey
-                                      sectionNameKeyPath:nil
-                                               cacheName:cacheName];
-}
-
-- (NSFetchedResultsController *)fetchedResultsControllerForFetchRequest:(NSFetchRequest *)fetchRequest
                                                              contextKey:(NSString *)contextKey;
 {
     return [self fetchedResultsControllerForFetchRequest:fetchRequest
                                               contextKey:contextKey
+                                      sectionNameKeyPath:nil
                                                cacheName:nil];
 }
 
