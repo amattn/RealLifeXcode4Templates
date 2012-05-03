@@ -27,8 +27,8 @@ static ___FILEBASENAMEASIDENTIFIER___ *__shared___FILEBASENAMEASIDENTIFIER___ = 
 #if NS_BLOCKS_AVAILABLE
 + (___FILEBASENAMEASIDENTIFIER___ *)singleton;
 {
-    static dispatch_once_t createSingletonPredicate;
-    dispatch_once(&createSingletonPredicate, ^
+    static dispatch_once_t singletonCreationToken;
+    dispatch_once(&singletonCreationToken, ^
     {
         __shared___FILEBASENAMEASIDENTIFIER___ = [[___FILEBASENAMEASIDENTIFIER___ alloc] init];
     });
