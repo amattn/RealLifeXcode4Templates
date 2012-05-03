@@ -89,7 +89,7 @@ static ___FILEBASENAMEASIDENTIFIER___ *__shared___FILEBASENAMEASIDENTIFIER___ = 
 
 //*****************************************************************************
 #pragma mark -
-#pragma mark ** IBActions **
+#pragma mark ** Actions **
 
 //*****************************************************************************
 #pragma mark -
