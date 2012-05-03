@@ -176,7 +176,7 @@
     
     NSFetchedResultsController *controllerToReturn;
     
-    // fetch request sort must match sectionNaneKeyPath
+    // fetch request sort must match sectionNameKeyPath
     
     NSPredicate *predicate = nil;
     if (self.predicateString)
