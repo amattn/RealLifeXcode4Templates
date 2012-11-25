@@ -15,13 +15,13 @@
 #pragma mark ** Protocols & Declarations **
 
 @interface ___FILEBASENAMEASIDENTIFIER___ : NSObject
-{
-
-}
 
 #pragma mark ** Designated Initializer **
 
 #pragma mark ** Properties **
+
+//@property (nonatomic, strong) <#object type#> *<#name#>;
+//@property (nonatomic, assign) <#scaler type#> <#name#>;
 
 #pragma mark ** Methods **
 

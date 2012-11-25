@@ -15,9 +15,7 @@
 #pragma mark ** Protocols & Declarations **
 
 @interface ___FILEBASENAMEASIDENTIFIER___ : RLBaseEntityManager
-{
-    
-}
+
 #pragma mark ** Designated Initializers **
 - (id)initWithCoreDataEnvironment:(NSObject <RLCoreDataEnvironmentProtocol> *)environment;
 + (___FILEBASENAMEASIDENTIFIER___ *)manager; // Manager using default RLCoreDataEnvironment singleton
@@ -25,6 +23,9 @@
 #pragma mark ** Core Data Properties **
 
 #pragma mark ** Properties **
+
+//@property (nonatomic, strong) <#object type#> *<#name#>;
+//@property (nonatomic, assign) <#scaler type#> <#name#>;
 
 #pragma mark ** Methods **
 

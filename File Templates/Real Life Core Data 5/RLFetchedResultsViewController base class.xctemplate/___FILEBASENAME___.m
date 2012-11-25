@@ -18,6 +18,9 @@
 @end
 
 @implementation ___FILEBASENAMEASIDENTIFIER___
+{
+
+}
 
 #pragma mark ** Synthesis **
 

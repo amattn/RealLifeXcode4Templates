@@ -25,11 +25,11 @@ ___COREDATAMANAGEDOBJECTCLASSREFERENCES___
 @end
 
 @interface ___FILEBASENAMEASIDENTIFIER___ : ___COREDATAMANAGEDOBJECTSUPERCLASS___ <___FILEBASENAMEASIDENTIFIER___GeneratedAccessors>
-{
-    
-}
 
 #pragma mark ** Custom Properties **
+
+//@property (nonatomic, strong) <#object type#> *<#name#>;
+//@property (nonatomic, assign) <#scaler type#> <#name#>;
 
 #pragma mark ** Methods **
 

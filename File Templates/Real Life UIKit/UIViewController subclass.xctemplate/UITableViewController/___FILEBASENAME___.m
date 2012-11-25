@@ -26,10 +26,14 @@ typedef enum {
 #pragma mark ** Protocols & Declarations **
 
 @interface ___FILEBASENAMEASIDENTIFIER___ ()
-
+//@property (nonatomic, strong) <#object type#> *<#name#>;
+//@property (nonatomic, assign) <#scaler type#> <#name#>;
 @end
 
 @implementation ___FILEBASENAMEASIDENTIFIER___
+{
+    
+}
 #pragma mark ** Synthesis **
 #pragma mark ** Static Variables **
 

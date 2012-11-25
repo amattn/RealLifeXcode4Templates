@@ -23,11 +23,13 @@
     // However if you plan on having test cases that inherit from 
     // other test cases, you can extract this @interface into 
     // a .h file for other test cases to inherit from.
-
 }
 @end
 
 @implementation ___FILEBASENAMEASIDENTIFIER___
+{
+
+}
 
 - (void)setUp;
 {

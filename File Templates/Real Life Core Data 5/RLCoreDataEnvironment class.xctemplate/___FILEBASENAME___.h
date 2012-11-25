@@ -25,9 +25,6 @@
 typedef void (^RLCoreDataErrorHandlerType)(NSError *error, SEL selectorWithError, BOOL isFatal);
 
 @interface ___FILEBASENAMEASIDENTIFIER___ : NSObject <RLCoreDataEnvironmentProtocol>
-{
-
-}
 
 #pragma mark ** Singleton Accessor **
 + (___FILEBASENAMEASIDENTIFIER___ *)singleton;

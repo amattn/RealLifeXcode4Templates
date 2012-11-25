@@ -11,10 +11,14 @@
 #import "___FILEBASENAME___.h"
 
 @interface ___FILEBASENAMEASIDENTIFIER___ ()
-
+//@property (nonatomic, strong) <#object type#> *<#name#>;
+//@property (nonatomic, assign) <#scaler type#> <#name#>;
 @end
 
 @implementation ___FILEBASENAMEASIDENTIFIER___
+{
+    
+}
 
 #pragma mark ** Synthesis **
 
