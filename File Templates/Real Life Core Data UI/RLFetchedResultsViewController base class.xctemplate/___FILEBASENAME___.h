@@ -24,7 +24,7 @@
 
 @class RLBaseEntityManager;
 
-@interface ___FILEBASENAMEASIDENTIFIER___ : RLFetchedResultsCollectionViewController <NSFetchedResultsControllerDelegate>
+@interface ___FILEBASENAMEASIDENTIFIER___ : UIViewController <NSFetchedResultsControllerDelegate>
 {
     // The ivars declared under the @protected directive are strictly for the use of the base classes
     @protected
@@ -36,7 +36,6 @@
 // use parent class initializers
 
 #pragma mark ** Properties **
-@property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic, strong, readonly) RLBaseEntityManager *entityManager;
 @property (nonatomic, strong, readonly) NSFetchedResultsController *fetchedResultsController;
 
@@ -46,7 +45,6 @@
 
 @property (nonatomic, strong, readonly) Class entityManagerClass;
 @property (nonatomic, strong, readonly) NSString *cellIdentifier;
-- (void)configureCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath;
 
 #pragma mark ** Methods that subclasses MAY implement **
 
