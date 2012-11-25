@@ -121,39 +121,45 @@
 
 //*****************************************************************************
 #pragma mark -
-#pragma mark ** UITableView Helper Methods **
+#pragma mark ** UICollectionView Helper Methods **
 
 //*****************************************************************************
 #pragma mark -
-#pragma mark ** UITableViewDataSource **
+#pragma mark ** UICollectionViewDataSource **
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView;
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
     return [[self.fetchedResultsController sections] count];
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section;
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
     return [sectionInfo numberOfObjects];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {   
     // Get the cell
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier];
+    id cell = [collectionView dequeueReusableCellWithReuseIdentifier:self.cellIdentifier forIndexPath:indexPath]
     
     if (cell == nil) {
-        // In this if statement, any attributes/properties that apply to all the 
-        // cells may be configured here.
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
-                                      reuseIdentifier:self.cellIdentifier];
+        // From the documentation:
+        // Important: You must register a class or nib file using the 
+        // registerClass:forCellWithReuseIdentifier: or 
+        // registerNib:forCellWithReuseIdentifier:
+        NSAssert(NO, @"SHOULD NEVER GET HERE");
     }
     
     // Configure the cell.
     [self configureCell:cell forRowAtIndexPath:indexPath];
     return cell;
 }
+
+//- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+//{
+
+//}
 
 //*****************************************************************************
 #pragma mark -
@@ -163,27 +169,11 @@
 #pragma mark -
 #pragma mark ** NSFetchedResultsControllerDelegate **
 
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller;
-{
-    [self.tableView beginUpdates];
-}
-
 - (void)controller:(NSFetchedResultsController *)controller 
   didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
            atIndex:(NSUInteger)sectionIndex
      forChangeType:(NSFetchedResultsChangeType)type;
 {
-    switch(type) {
-        case NSFetchedResultsChangeInsert:
-            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]
-                            withRowAnimation:UITableViewRowAnimationFade];
-            break;
-
-        case NSFetchedResultsChangeDelete:
-            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]
-                             withRowAnimation:UITableViewRowAnimationFade];
-            break;
-    }
 }
 
 - (void)controller:(NSFetchedResultsController *)controller 
@@ -192,38 +182,10 @@
      forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath;
 {
- 
-    UITableView *tableView = self.tableView;
-
-    UITableViewRowAnimation defaultAnimation = UITableViewRowAnimationFade;
-
-    switch(type) {
-        case NSFetchedResultsChangeInsert:
-            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:defaultAnimation];
-            break;
-
-        case NSFetchedResultsChangeDelete:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:defaultAnimation];
-            break;
-
-        case NSFetchedResultsChangeUpdate:
-        {
-            UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-            if (cell)
-                [self configureCell:cell forRowAtIndexPath:indexPath];
-        }
-            break;
-
-        case NSFetchedResultsChangeMove:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:defaultAnimation];
-            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:defaultAnimation];
-            break;
-    }
 }
  
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller;
 {
-    [self.tableView endUpdates];
 }
 
 //*****************************************************************************
