@@ -24,38 +24,22 @@
 
 @class RLBaseEntityManager;
 
-@interface ___FILEBASENAMEASIDENTIFIER___ : RLFetchedResultsCollectionViewController <NSFetchedResultsControllerDelegate>
-{
-    // The ivars declared under the @protected directive are strictly for the use of the base classes
-    @protected
-    NSFetchedResultsController *_fetchedResultsController;
-    NSString *_predicateString;
-    NSArray *_sortDescriptors;
-}
+@interface ___FILEBASENAMEASIDENTIFIER___ : RLFetchedResultsViewController <NSFetchedResultsControllerDelegate>
+
 #pragma mark ** Designated Initializer **
 // use parent class initializers
 
 #pragma mark ** Properties **
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
-@property (nonatomic, strong, readonly) RLBaseEntityManager *entityManager;
-@property (nonatomic, strong, readonly) NSFetchedResultsController *fetchedResultsController;
 
 #pragma mark ** Methods **
 
 #pragma mark ** Methods that subclasses MUST implement **
 
-@property (nonatomic, strong, readonly) Class entityManagerClass;
-@property (nonatomic, strong, readonly) NSString *cellIdentifier;
 - (void)configureCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath;
 
 #pragma mark ** Methods that subclasses MAY implement **
 
-@property (nonatomic, strong) NSString *predicateString;
-@property (nonatomic, strong) NSArray *sortDescriptors;
-@property (nonatomic, assign, readonly) BOOL shouldUseSections; // The default implementation returns YES.
-
 #pragma mark ** Utilities **
-
-- (NSFetchedResultsController *)fetchedResultsControllerWithSortDescriptors:(NSArray *)sortDescriptors;
 
 @end

@@ -4,7 +4,7 @@
 		"public.objective-c-plus-plus-source",
 	);
 	"DefaultCompletionName" = RLFetchedResultsViewController;
-	Description = "A template for an abstract base class, thus you typically only need one per app.\n\n This class is designed to work seamlessly with the RLBaseEntityManager classes. It is designed as a UIViewController, but can be trivially converted into a UITableViewController.";
+	Description = "A template for an abstract base class, thus you typically only need one per app. If used with the default name, can be seamlessly used with other templates.\n\n This class is designed to work with the RLBaseEntityManager classes. It is designed as a UIViewController, but can be trivially converted into a UITableViewController.";
 	Kind = "Xcode.IDEKit.TextSubstitutionFileTemplateKind";
 	MainTemplateFile = "___FILEBASENAME___.m";
 	Platforms = (
