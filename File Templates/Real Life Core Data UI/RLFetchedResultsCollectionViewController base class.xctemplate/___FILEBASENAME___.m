@@ -54,7 +54,7 @@
     // Depending on you needs, you may need to move the performFetchWithErrorHandler:
     // into the viewWillAppear: method.
     
-    [self.tableView reloadData];
+    [self.collectionView reloadData];
 }
 
 - (void)viewDidUnload;
@@ -141,7 +141,7 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {   
     // Get the cell
-    id cell = [collectionView dequeueReusableCellWithReuseIdentifier:self.cellIdentifier forIndexPath:indexPath]
+    id cell = [collectionView dequeueReusableCellWithReuseIdentifier:self.cellIdentifier forIndexPath:indexPath];
     
     if (cell == nil) {
         // From the documentation:
